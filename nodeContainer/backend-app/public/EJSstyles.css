@@ -1,0 +1,63 @@
+.resetPasswordContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 91%;
+}
+
+.userReset {
+    width: 20vw;
+    height: 34vh;
+    background: #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+    padding: .6rem;
+}
+
+.userReset input {
+    width: 11vw;
+    height: 2.8vh;
+}
+
+.passChangeSubmit {
+    margin-top: 2vh;
+    height: 3.5vh;
+    width: 11vw;
+    background-color: #59c051;
+    cursor: pointer;
+    transition: all .5s;
+}
+
+.errorMessage {
+    display: none;
+    flex-direction: row;
+    color: red;
+    align-items: center;
+    margin-top: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    width: 11vw;
+    font-size: smaller;
+}
+
+.successMessage {
+    height: 6vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #59c051;
+    margin-top: -1vh;
+}
+
+.successMessage span {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: smaller;
+}
