@@ -10,6 +10,7 @@ const fs  = require('fs');
 const { promisify } = require('util');
 const readFile = promisify(fs.readFile);
 const cors = require("cors");
+const Shippo = require("shippo");
 require("dotenv").config();
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -128,6 +129,12 @@ app.get('/resetMyPassword', (req, res) => {
   res.render('resetMyPassword', {
     email
   })
+});
+
+app.get('/packageTracking', (req, res) => {
+  const test = req.body;
+  console.log(test)
+  res.sendStatus(200);
 });
 
 require("./app/routes/users.routes.js")(app);

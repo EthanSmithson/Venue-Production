@@ -10,9 +10,9 @@
           </ion-header>
           <ion-content>
             <div class="flex-center-home">
-              <div>
+              <!-- <div>
                 <ion-button color="success" expand="block">Map</ion-button>
-              </div>
+              </div> -->
               <ion-list>
                 <ion-item>
                   <ion-card>
@@ -67,16 +67,78 @@
           </ion-content>
         </div>
       </ion-tab>
+      <ion-tab tab="map">
+        <div id="map-page">
+          <ion-header>
+            <ion-toolbar>
+              <ion-title>map</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <div class="example-content">Map content</div>
+          </ion-content>
+        </div>
+      </ion-tab>
       <ion-tab tab="radio">
         <div id="radio-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>Radio</ion-title>
+              <ion-title>Packages</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
-            <div class="example-content">Radio content</div>
+            <div class="flex-center-home">
+              <!-- <ion-button color="success" expand="block">Add Package</ion-button> -->
+              <!-- <ion-button id="click-trigger"><ion-icon name="add-outline"></ion-icon></ion-button>
+              <ion-popover trigger="click-trigger" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">
+                    <ion-item>
+                      <ion-input label="Stacked label" labelPlacement="stacked" placeholder="Enter text"></ion-input>
+                    </ion-item>
+                  </ion-content>
+                </ng-template>
+              </ion-popover> -->
+              <ion-list>
+                <ion-item>
+                  <ion-card>
+                    <ion-card-header>
+                      <ion-card-title>Package</ion-card-title>
+                      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
+                    </ion-card-header>
+                  
+                    <ion-card-content>
+                      Here's a small text description for the card content. Nothing more, nothing less.
+                    </ion-card-content>
+                    <div class="notiBtns">
+                      <ion-button color="success" class="packageEdit" size="small">Edit</ion-button>
+                      <ion-button color="success" class="packageDelete" size="small">Delete</ion-button>
+                    </div>
+                  </ion-card>
+                </ion-item>
+              </ion-list>
+            </div>
           </ion-content>
+          <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+            <ion-fab-button color="success">
+              <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-list side="top">
+              <form [formGroup]="form" (ngSubmit)="submitPackage(form.value)">
+                <ion-item style="margin-left: -54vw;">
+                  <ion-input label="Carrier" labelPlacement="stacked" placeholder="Enter text" formControlName="carrier" aria-required="true" type="text"></ion-input>
+                </ion-item>
+                <ion-item style="margin-left: -54vw;">
+                  <ion-input label="Tracking Number" labelPlacement="stacked" placeholder="Enter text" formControlName="trackingNumber" aria-required="true" type="number"></ion-input>
+                </ion-item>
+                <ion-item style="margin-left: -54vw; width: 55.6vw;">
+                  <ion-button  type="submit" 
+                  color="success" 
+                  [disabled]="!form.valid" size="small">Create</ion-button>
+                </ion-item>
+              </form> 
+            </ion-fab-list>
+          </ion-fab>
         </div>
       </ion-tab>
       <ion-tab tab="library">
@@ -108,6 +170,10 @@
         <ion-tab-button tab="home">
           <ion-icon name="home-outline"></ion-icon>
           Home
+        </ion-tab-button>
+        <ion-tab-button tab="map">
+          <ion-icon name="map-outline"></ion-icon>
+          Map
         </ion-tab-button>
         <ion-tab-button tab="radio">
           <ion-icon name="cube-outline"></ion-icon>
