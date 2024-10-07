@@ -100,11 +100,12 @@
                 </ng-template>
               </ion-popover> -->
               <ion-list>
-                <ion-item>
+                @for (package of packages; track packages) {
+                  <li>{{package.trackingNumber}}</li>
+                  <ion-item>
                   <ion-card>
                     <ion-card-header>
                       <ion-card-title>Package</ion-card-title>
-                      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
                     </ion-card-header>
                   
                     <ion-card-content>
@@ -116,6 +117,22 @@
                     </div>
                   </ion-card>
                 </ion-item>
+                }
+                <!-- <ion-item>
+                  <ion-card>
+                    <ion-card-header>
+                      <ion-card-title>Package</ion-card-title>
+                    </ion-card-header>
+                  
+                    <ion-card-content>
+                      Here's a small text description for the card content. Nothing more, nothing less.
+                    </ion-card-content>
+                    <div class="notiBtns">
+                      <ion-button color="success" class="packageEdit" size="small">Edit</ion-button>
+                      <ion-button color="success" class="packageDelete" size="small">Delete</ion-button>
+                    </div>
+                  </ion-card>
+                </ion-item> -->
               </ion-list>
             </div>
           </ion-content>
@@ -125,6 +142,13 @@
             </ion-fab-button>
             <ion-fab-list side="top">
               <form [formGroup]="form" (ngSubmit)="submitPackage(form.value)">
+                <ion-item *ngIf="labelInUseError || labelCreatedAlert" #removeLabelInUseError style="width: 56vw;
+                margin-left: -54vw;
+                font-size: 12px;">
+                  <ion-label *ngIf="labelInUseError" color="danger">{{labelInUseError}}</ion-label>
+                  <ion-label *ngIf="labelCreatedAlert" color="success">{{labelCreatedAlert}}</ion-label>
+                  <!-- <ion-label #removeEmailError color="danger" class="errorLabel" *ngIf="userDoesNotExists  && !removeEmailError && !form.get('email').errors?.required  && !form.get('email').errors?.email && !removeUserDoesNotExists">{{userDoesNotExists}}</ion-label> -->
+                </ion-item>
                 <ion-item style="margin-left: -54vw;">
                   <ion-input label="Carrier" labelPlacement="stacked" placeholder="Enter text" formControlName="carrier" aria-required="true" type="text"></ion-input>
                 </ion-item>

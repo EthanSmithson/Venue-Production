@@ -113,4 +113,43 @@ Users.changePassword = (data, result) => {
   });
 };
 
+Users.addPackage = (data, result) => {
+  sql.query(`INSERT INTO Packages (carrier, trackingNumber, userId) VALUES ('${data.carrier}', ${data.trackingNumber}, ${data.userId})`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
+      return;
+    }
+  });
+};
+
+Users.findId = (data, result) => {
+  sql.query(`SELECT userId FROM Users WHERE email = '${data.myCookie}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
+      return;
+    }
+  });
+};
+
+Users.getPackages = (data, result) => {
+  sql.query(`SELECT * FROM Packages WHERE userId = '${data.myCookie}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
 module.exports = Users;

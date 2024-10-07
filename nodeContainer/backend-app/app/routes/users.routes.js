@@ -19,6 +19,12 @@ module.exports = app => {
     router.get("/confirmed/:email", users.emailConfirmed);
 
     router.post("/passwordChange", users.changePassword);
+
+    router.post("/createPackage", users.createPackage);
+
+    router.get("/getId/:myCookie", users.findId);
+
+    router.get("/getMyPackages/:myCookie", users.getPackages);
   
     app.use('/api/users', router);
   };

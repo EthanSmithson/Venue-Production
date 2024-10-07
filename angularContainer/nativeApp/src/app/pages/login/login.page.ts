@@ -10,6 +10,7 @@ import { compileComponentFromMetadata } from '@angular/compiler';
 import { LoginService } from 'src/app/services/login.service';
 import { ElementRef, Renderer2 } from '@angular/core'; 
 import { ResetEmailService } from 'src/app/services/resetEmail.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class LoginPage implements OnInit {
 
   form: any = FormGroup;
 
-  constructor(private router:Router, private formBuilder: FormBuilder, private renderer: Renderer2) { }
+  constructor(private router:Router, private formBuilder: FormBuilder, private renderer: Renderer2, private cookieService: CookieService) { }
 
   ngOnInit() {
     let email: any;
@@ -66,6 +67,7 @@ export class LoginPage implements OnInit {
           console.log("Am I confirmed " + this.isConfirmed)
           if (this.isConfirmed == 1) {
             this.router.navigateByUrl('/home');
+            this.cookieService.set("myCookie", formData.email);
           } else {
             this.userDoesNotExists = "User is not Confirmed!";
             this.hideEmailError(this.userDoesNotExists);

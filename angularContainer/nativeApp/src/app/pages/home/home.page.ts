@@ -1,26 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel} from '@ionic/angular/standalone';
 import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Shippo } from 'shippo';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PackageCreationForm } from './form/packageCreation.page.form';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
+import { AddPackage } from 'src/app/services/addPackage.service';
+import { inject, ViewChild } from '@angular/core';
+import { ElementRef, Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel]
 })
 export class HomePage implements OnInit {
 
   form: any = FormGroup;
 
-  constructor(private formBuilder: FormBuilder, ) { }
+  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2) { }
 
   ngOnInit() {
     addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add })
@@ -32,20 +36,6 @@ export class HomePage implements OnInit {
       apiKeyHeader: "ShippoToken shippo_live_921650f955b8c539d484477624425c6edc4900d3",
       shippoApiVersion: "2018-02-08",
     });
-    
-    // async function run() {
-    //   const result = await shippo.webhooks.createWebhook({
-    //     event: "track_updated",
-    //     url: "http://localhost:8080/packageTracking",
-    //     active: true,
-    //     isTest: false,
-    //   });
-    
-    //   // Handle the result
-    //   console.log(result)
-    // }
-    
-    // run();
 
     async function listWebhooks() {
       const result = await shippo.webhooks.listWebhooks();
@@ -55,10 +45,55 @@ export class HomePage implements OnInit {
     }
     
     listWebhooks();
+
+    // let cookieObject["myCookie"] = this.cookieService.get("myCookie")
+
+    this.addPackage.getUserId({myCookie : this.cookieService.get("myCookie")}).subscribe((results: any) => {
+      this.addPackage.getPackages(results.userId).subscribe((results: any) => {
+        console.log(results);
+        this.packages = results;
+        console.log(this.packages);
+      })
+    });
   }
 
+  @ViewChild("removeLabelInUseError") thisLabelError: any = ElementRef;
+
+  private addPackage = inject(AddPackage);
+  userId: any;
+  labelInUseError: any;
+  labelCreatedAlert: any;
+  packages: any;
+
   submitPackage(formData: any) {
-    console.log(formData)
+    let myCookie = this.cookieService.get("myCookie");
+    formData["myCookie"] = myCookie;
+    console.log(formData);
+    this.addPackage.getUserId(formData).subscribe((results: any) => {
+      console.log(results);
+      this.userId = results.userId;
+      console.log(this.userId);
+      if (this.userId != null) {
+        formData['userId'] = this.userId;
+        this.addPackage.addPackage(formData).subscribe((results: any) => {
+          console.log(results);
+          if (results.dupe) {
+            console.log(this.thisLabelError)
+            this.labelInUseError = "Tracking Number is in Use.";
+            // this.hideLabelError(this.labelInUseError);
+          } else {
+            this.labelCreatedAlert = "Package Added!";
+            this.hideLabelAlert(this.labelCreatedAlert);
+          }
+        })
+      }
+    })
+  }
+
+  hideLabelAlert(data: any) {
+    setTimeout(() => {
+      this.labelCreatedAlert = "";
+    }, 3000);
   }
 
 }
