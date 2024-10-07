@@ -4,4 +4,4 @@ angularContainer/nativeApp/.angular
 
 angularContainer/nativeApp/node_modules
 
-mysqlContainer
+mysqlContainer/db
