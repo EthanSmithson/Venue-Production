@@ -114,7 +114,7 @@ exports.changePassword = (req, res) => {
     return
   }
 
-  console.log(req.body);
+  // console.log(req.body);
 
   Users.changePassword((req.body), (err, data) => {
     if (err)
@@ -134,7 +134,7 @@ exports.createPackage = (req, res) => {
     });
   }
 
-  console.log(req.body);
+  // console.log(req.body);
 
   Users.addPackage((req.body), (err, data) => {
     if ( err && err.errno == 1062) {
@@ -150,7 +150,7 @@ exports.createPackage = (req, res) => {
 
 exports.findId = (req, res) => {
   User.findId((req.params), (err, data) => {
-    console.log(req.params);
+    // console.log(req.params);
     if (err) {
       if (err.kind === "not_found") {
         res.json({
@@ -167,7 +167,7 @@ exports.findId = (req, res) => {
 
 exports.getPackages = (req, res) => {
   User.getPackages((req.params), (err, data) => {
-    console.log(req.params);
+    // console.log(req.params);
     if (err) {
       if (err.kind === "not_found") {
         res.json({
@@ -180,4 +180,33 @@ exports.getPackages = (req, res) => {
       }
     } else res.json( data );
   });
+}
+
+exports.trackPackages = (req, res) => {
+  const Shippo = require('shippo');
+  console.log(req.body);
+  const shippo = new Shippo('shippo_test_8041da9b8ae9faf625afe7c0af782591be142fea'); 
+  async function run() {
+    const result = await shippo.trackingStatus.get("SHIPPO_TRANSIT", "shippo");
+  
+    // Handle the result
+    console.log(result)
+  }
+  
+  run();
+  // User.trackPackages((req.params), (err, data) => {
+  //   console.log("what the: " + req.params);
+  //   if (err) {
+  //     if (err.kind === "not_found") {
+  //       res.json({
+  //         status: 2
+  //       });
+  //     } else {
+  //       res.status(500).send({
+  //         message: "Error retrieving User with ID " + req.params
+  //       });
+  //     }
+  //   } else res.json( data );
+  // });
+
 }

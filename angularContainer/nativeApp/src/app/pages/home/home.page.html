@@ -100,16 +100,16 @@
                 </ng-template>
               </ion-popover> -->
               <ion-list>
-                @for (package of packages; track packages) {
-                  <li>{{package.trackingNumber}}</li>
+                <!-- @for (package of packages; track packages) {
                   <ion-item>
                   <ion-card>
                     <ion-card-header>
                       <ion-card-title>Package</ion-card-title>
                     </ion-card-header>
-                  
+
                     <ion-card-content>
-                      Here's a small text description for the card content. Nothing more, nothing less.
+                      Carrier: {{package.carrier}} <br>
+                      Tracking Number: {{package.trackingNumber}}
                     </ion-card-content>
                     <div class="notiBtns">
                       <ion-button color="success" class="packageEdit" size="small">Edit</ion-button>
@@ -117,7 +117,7 @@
                     </div>
                   </ion-card>
                 </ion-item>
-                }
+                } -->
                 <!-- <ion-item>
                   <ion-card>
                     <ion-card-header>

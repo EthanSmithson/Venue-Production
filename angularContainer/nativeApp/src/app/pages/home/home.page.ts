@@ -10,6 +10,7 @@ import { PackageCreationForm } from './form/packageCreation.page.form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { AddPackage } from 'src/app/services/addPackage.service';
+import { ShippoApiService } from 'src/app/services/shippoApi.service';
 import { inject, ViewChild } from '@angular/core';
 import { ElementRef, Renderer2 } from '@angular/core';
 
@@ -33,7 +34,7 @@ export class HomePage implements OnInit {
     console.log(this.form);
 
     const shippo = new Shippo({
-      apiKeyHeader: "ShippoToken shippo_live_921650f955b8c539d484477624425c6edc4900d3",
+      apiKeyHeader: "ShippoToken shippo_test_8041da9b8ae9faf625afe7c0af782591be142fea",
       shippoApiVersion: "2018-02-08",
     });
 
@@ -45,6 +46,18 @@ export class HomePage implements OnInit {
     }
     
     listWebhooks();
+
+    // async function run() {
+    //   const result = await shippo.trackingStatus.get("SHIPPO_TRANSIT", "shippo");
+    
+    //   // Handle the result
+    //   console.log(result)
+    // }
+    this.shippoApiService.trackOrder().subscribe((results: any) => {
+          console.log(results);
+        })
+    
+    // run();
 
     // let cookieObject["myCookie"] = this.cookieService.get("myCookie")
 
@@ -60,6 +73,7 @@ export class HomePage implements OnInit {
   @ViewChild("removeLabelInUseError") thisLabelError: any = ElementRef;
 
   private addPackage = inject(AddPackage);
+  private shippoApiService = inject(ShippoApiService);
   userId: any;
   labelInUseError: any;
   labelCreatedAlert: any;
@@ -82,6 +96,11 @@ export class HomePage implements OnInit {
             this.labelInUseError = "Tracking Number is in Use.";
             // this.hideLabelError(this.labelInUseError);
           } else {
+            // let createMyPacakge = this.createMyPackage(formData);
+            // this.shippoApiService.trackOrder(formData).subscribe((results: any) => {
+            //   console.log(results);
+            // })
+            // let trackMyPackage = this.trackPackage(formData);
             this.labelCreatedAlert = "Package Added!";
             this.hideLabelAlert(this.labelCreatedAlert);
           }
@@ -95,5 +114,25 @@ export class HomePage implements OnInit {
       this.labelCreatedAlert = "";
     }, 3000);
   }
+
+  // trackPackage(data: any) {
+  //   this.shippoApiService.trackOrder(data).subscribe((results: any) => {
+  //     console.log(results);
+  //   })
+  // }
+
+  // createMyPackage(data: any) {
+  //   // this.shippoApiService.createOrder(data).subscribe((results: any) => {
+  //   //   console.log(results);
+  //   // })
+  //   this.shippoApiService.createOrder(data)
+  //     .then(shipment => {
+  //       console.log('Shipment created:', shipment);
+  //       // return this.shippoApiService.getRates(shipment.object_id);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //     });
+  // }
 
 }

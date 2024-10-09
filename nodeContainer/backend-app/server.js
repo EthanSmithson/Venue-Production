@@ -44,7 +44,7 @@ app.post('/confirmEmail', urlEncodedParser, async (req, res) => {
   const email = req.body.email;
 
   if (email) {
-      const data = await ejs.renderFile("/workspaces/ethan/Desktop/Ethan/ShipIt/nodeContainer/backend-app/views/confirmEmailTemplate.ejs", { email });
+      const data = await ejs.renderFile("/workspaces/ShipIt/nodeContainer/backend-app/views/confirmEmailTemplate.ejs", { email });
       
       const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
@@ -85,7 +85,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
     const email = req.body.email;
 
     if (req.body.email) {
-        const data = await ejs.renderFile("/workspaces/ethan/Desktop/Ethan/ShipIt/nodeContainer/backend-app/views/resetEmail.ejs", { email });
+        const data = await ejs.renderFile("/workspaces/ShipIt/nodeContainer/backend-app/views/resetEmail.ejs", { email });
 
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -120,7 +120,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
 });
 
 app.get('/confirmed', (req, res) => {
-  res.sendFile( __dirname + '/emailTemplates/confirmedEmailMessage.html');
+  res.sendFile( __dirname + '/workspaces/ShipIt/nodeContainer/backend-app/emailTemplates/confirmedEmailMessage.html');
 });
 
 app.get('/resetMyPassword', (req, res) => {
