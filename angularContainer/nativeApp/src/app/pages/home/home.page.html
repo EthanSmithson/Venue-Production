@@ -88,56 +88,28 @@
           </ion-header>
           <ion-content>
             <div class="flex-center-home">
-              <!-- <ion-button color="success" expand="block">Add Package</ion-button> -->
-              <!-- <ion-button id="click-trigger"><ion-icon name="add-outline"></ion-icon></ion-button>
-              <ion-popover trigger="click-trigger" triggerAction="click">
-                <ng-template>
-                  <ion-content class="ion-padding">
-                    <ion-item>
-                      <ion-input label="Stacked label" labelPlacement="stacked" placeholder="Enter text"></ion-input>
-                    </ion-item>
-                  </ion-content>
-                </ng-template>
-              </ion-popover> -->
               <ion-list>
-                <!-- @for (package of packages; track packages) {
+                @for (package of packages; track packages) {
                   <ion-item>
-                  <ion-card>
-                    <ion-card-header>
-                      <ion-card-title>Package</ion-card-title>
-                    </ion-card-header>
-
-                    <ion-card-content>
-                      Carrier: {{package.carrier}} <br>
-                      Tracking Number: {{package.trackingNumber}}
-                    </ion-card-content>
-                    <div class="notiBtns">
-                      <ion-button color="success" class="packageEdit" size="small">Edit</ion-button>
-                      <ion-button color="success" class="packageDelete" size="small">Delete</ion-button>
-                    </div>
-                  </ion-card>
-                </ion-item>
-                } -->
-                <!-- <ion-item>
-                  <ion-card>
-                    <ion-card-header>
-                      <ion-card-title>Package</ion-card-title>
-                    </ion-card-header>
-                  
-                    <ion-card-content>
-                      Here's a small text description for the card content. Nothing more, nothing less.
-                    </ion-card-content>
-                    <div class="notiBtns">
-                      <ion-button color="success" class="packageEdit" size="small">Edit</ion-button>
-                      <ion-button color="success" class="packageDelete" size="small">Delete</ion-button>
-                    </div>
-                  </ion-card>
-                </ion-item> -->
+                    <ion-card style="width: 93vw;">
+                      <ion-card-header>
+                        <ion-card-title style="font-size: x-large;">Package</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                           Carrier: {{package.carrier}}
+                        <br>Tracking Number: {{package.trackingNumber}}
+                      </ion-card-content>
+                      <div class="ion-text-end ion-margin">
+                        <ion-button color="success" style="max-width: fit-content;" size="small">Edit</ion-button><ion-button color="success" style="max-width: fit-content;" size="small">Delete</ion-button>                        
+                      </div>
+                    </ion-card>
+                  </ion-item>
+                }
               </ion-list>
             </div>
           </ion-content>
           <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-            <ion-fab-button color="success">
+            <ion-fab-button class="ion-margin" color="success">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
             <ion-fab-list side="top">
