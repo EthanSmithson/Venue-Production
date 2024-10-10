@@ -1,5 +1,6 @@
 const Users = require("../models/users.model.js");
 const User = require("../models/users.model.js");
+const http = require("https");
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -183,30 +184,64 @@ exports.getPackages = (req, res) => {
 }
 
 exports.trackPackages = (req, res) => {
-  const Shippo = require('shippo');
-  console.log(req.body);
-  const shippo = new Shippo('shippo_test_8041da9b8ae9faf625afe7c0af782591be142fea'); 
-  async function run() {
-    const result = await shippo.trackingStatus.get("SHIPPO_TRANSIT", "shippo");
+  const options = {
+    "method": "GET",
+    "hostname": "api.aftership.com",
+    "port": null,
+    "path": "/tracking/2024-07/trackings",
+    "headers": {
+      "Content-Type": "application/json",
+      "as-api-key": "asat_b805cdf94e3d40e495af7fe45cc51227"
+    }
+  };
   
-    // Handle the result
-    console.log(result)
-  }
+  const request = http.request(options, function (res) {
+    const chunks = [];
   
-  run();
-  // User.trackPackages((req.params), (err, data) => {
-  //   console.log("what the: " + req.params);
-  //   if (err) {
-  //     if (err.kind === "not_found") {
-  //       res.json({
-  //         status: 2
-  //       });
-  //     } else {
-  //       res.status(500).send({
-  //         message: "Error retrieving User with ID " + req.params
-  //       });
-  //     }
-  //   } else res.json( data );
-  // });
+    res.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+  
+    res.on("end", function () {
+      const body = Buffer.concat(chunks);
+      console.log(body.toString());
+    });
+  });
 
+  request.write(JSON.stringify({
+    order_id: '736f6f0da45a44f3abe2b0b10a1db452',
+  }));
+  
+  request.end();
+}
+
+exports.createTracking = (req, res) => {
+  const options = {
+    "method": "POST",
+    "hostname": "api.aftership.com",
+    "port": null,
+    "path": "/tracking/2024-07/trackings",
+    "headers": {
+      "Content-Type": "application/json",
+      "as-api-key": "asat_b805cdf94e3d40e495af7fe45cc51227"
+    }
+  };
+  
+  const request = http.request(options, function (res) {
+    const chunks = [];
+  
+    res.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+  
+    res.on("end", function () {
+      const body = Buffer.concat(chunks);
+      console.log(body.toString());
+    });
+  });
+  
+  request.write(JSON.stringify({
+    tracking_number: '123456789',
+  }));
+  request.end();
 }

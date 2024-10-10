@@ -152,17 +152,4 @@ Users.getPackages = (data, result) => {
   });
 };
 
-// Users.trackPackages = (data, result) => {
-//   sql.query(`SELECT * FROM Packages WHERE userId = '${data.myCookie}'`, (err, res) => {
-//     if (err) {
-//       console.log("error: ", err);
-//       result(err, null);
-//       return;
-//     } else {
-//       result(null, res);
-//       return;
-//     }
-//   });
-// };
-
 module.exports = Users;

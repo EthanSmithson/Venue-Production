@@ -1,12 +1,6 @@
 {
-    "/api1": {
+    "/api": {
     "target": "http://localhost:8080",
-    "secure": false,
-    "changeOrigin": false,
-    "logLevel": "debug"
-    },
-    "/api2": {
-    "target": "https://api.goshippo.com",
     "secure": false,
     "changeOrigin": false,
     "logLevel": "debug"

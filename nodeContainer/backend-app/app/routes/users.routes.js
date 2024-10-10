@@ -26,7 +26,9 @@ module.exports = app => {
 
     router.get("/getMyPackages/:myCookie", users.getPackages);
 
-    router.post("/trackMyPackages", users.trackPackages);
+    router.get("/trackMyPackages", users.trackPackages);
+
+    router.post("/createTracking", users.createTracking);
   
     app.use('/api/users', router);
   };
