@@ -30,6 +30,15 @@ export class AddPackage {
         ); 
     }
 
+    getSlug(formData: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        // const formDataJson = JSON.stringify(formData);
+        console.log(formData)
+        return this.http.get<any>(
+            this.baseUrl + `/api/users/getSlug/${formData.trackingNumber}`, {headers: headers}
+        );
+    }
+
     getPackages(formData: any): Observable<any> {
         const headers = { 'content-type': 'application/json'};
         // const formDataJson = JSON.stringify(formData);
@@ -37,6 +46,14 @@ export class AddPackage {
         return this.http.get<any>(
             this.baseUrl + `/api/users/getMyPackages/${formData}`, {headers: headers}
         );
+    }
+
+    removePackage(trackingNumber: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        const formDataJson = JSON.stringify(trackingNumber);
+        return this.http.post<any>(
+            this.baseUrl + `/api/users/removePackage`, formDataJson, {headers: headers}
+        ); 
     }
 
 }

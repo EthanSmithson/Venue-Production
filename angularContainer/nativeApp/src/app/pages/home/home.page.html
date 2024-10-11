@@ -1,3 +1,11 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+</head>
 <ion-content>
   <div>
     <ion-tabs>
@@ -5,7 +13,7 @@
         <div id="home-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>Hello</ion-title>
+              <ion-title>Hello {{myName}}</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
@@ -71,7 +79,7 @@
         <div id="map-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>map</ion-title>
+              <ion-title>Map</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
@@ -93,14 +101,20 @@
                   <ion-item>
                     <ion-card style="width: 93vw;">
                       <ion-card-header>
-                        <ion-card-title style="font-size: x-large;">Package</ion-card-title>
+                        <ion-card-title style="font-size: x-large;  font-family: 'Libre Franklin', sans-serif;
+                        font-optical-sizing: auto;
+                        font-weight: 500;
+                        font-style: regular;">{{package.title}}</ion-card-title>
                       </ion-card-header>
-                      <ion-card-content>
+                      <ion-card-content style="  font-family: 'Quicksand', sans-serif;
+                      font-optical-sizing: auto;
+                      font-weight: 400;
+                      font-style: regular;">
                            Carrier: {{package.carrier}}
                         <br>Tracking Number: {{package.trackingNumber}}
                       </ion-card-content>
                       <div class="ion-text-end ion-margin">
-                        <ion-button color="success" style="max-width: fit-content;" size="small">Edit</ion-button><ion-button color="success" style="max-width: fit-content;" size="small">Delete</ion-button>                        
+                        <ion-button color="success" style="max-width: fit-content;" size="small">Edit</ion-button><ion-button (click)="removeThisPackage(package.trackingNumber)" color="success" style="max-width: fit-content;" size="small">Delete</ion-button>                        
                       </div>
                     </ion-card>
                   </ion-item>
@@ -112,7 +126,7 @@
             <ion-fab-button class="ion-margin" color="success">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
-            <ion-fab-list side="top">
+            <ion-fab-list (clickOutside)="handleClickOutside()" side="top">
               <form [formGroup]="form" (ngSubmit)="submitPackage(form.value)">
                 <ion-item *ngIf="labelInUseError || labelCreatedAlert" #removeLabelInUseError style="width: 56vw;
                 margin-left: -54vw;
@@ -122,10 +136,10 @@
                   <!-- <ion-label #removeEmailError color="danger" class="errorLabel" *ngIf="userDoesNotExists  && !removeEmailError && !form.get('email').errors?.required  && !form.get('email').errors?.email && !removeUserDoesNotExists">{{userDoesNotExists}}</ion-label> -->
                 </ion-item>
                 <ion-item style="margin-left: -54vw;">
-                  <ion-input label="Carrier" labelPlacement="stacked" placeholder="Enter text" formControlName="carrier" aria-required="true" type="text"></ion-input>
+                  <ion-input label="Title" labelPlacement="stacked" placeholder="Enter Package Title" formControlName="title" aria-required="true" type="text"></ion-input>
                 </ion-item>
                 <ion-item style="margin-left: -54vw;">
-                  <ion-input label="Tracking Number" labelPlacement="stacked" placeholder="Enter text" formControlName="trackingNumber" aria-required="true" type="number"></ion-input>
+                  <ion-input label="Tracking Number" labelPlacement="stacked" placeholder="Enter Tracking Number" formControlName="trackingNumber" aria-required="true" type="text"></ion-input>
                 </ion-item>
                 <ion-item style="margin-left: -54vw; width: 55.6vw;">
                   <ion-button  type="submit" 
@@ -137,27 +151,54 @@
           </ion-fab>
         </div>
       </ion-tab>
-      <ion-tab tab="library">
+      <!-- <ion-tab tab="library">
         <div id="library-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>Library</ion-title>
+              <ion-title>Settings</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
-            <div class="example-content">Library content</div>
+            <div class="example-content">Settings content</div>
           </ion-content>
         </div>
-      </ion-tab>
+      </ion-tab> -->
       <ion-tab tab="search">
         <div id="search-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>Search</ion-title>
+              <ion-title>Profile</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
-            <div class="example-content">Search content</div>
+            <div class="flex-center-home">
+              <ion-avatar class="ion-activatable ripple-parent circle">
+                <ion-ripple-effect></ion-ripple-effect>
+                <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+              </ion-avatar>
+              <ion-list style="width: 85%;" [inset]="true">
+                <ion-item [button]="true">
+                  <ion-icon color="danger" slot="start" name="list-circle" size="large"></ion-icon>
+                  <ion-label>Profile</ion-label>
+                  <!-- <ion-note slot="end">6</ion-note> -->
+                </ion-item>
+                <ion-item [button]="true">
+                  <ion-icon color="tertiary" slot="start" name="list-circle" size="large"></ion-icon>
+                  <ion-label>Display</ion-label>
+                  <!-- <ion-note slot="end">15</ion-note> -->
+                </ion-item>
+                <!-- <ion-item [button]="true">
+                  <ion-icon color="success" slot="start" name="list-circle" size="large"></ion-icon>
+                  <ion-label>Cleaning</ion-label>
+                  <ion-note slot="end">3</ion-note>
+                </ion-item>
+                <ion-item [button]="true">
+                  <ion-icon color="warning" slot="start" name="list-circle" size="large"></ion-icon>
+                  <ion-label>Reminders</ion-label>
+                  <ion-note slot="end">8</ion-note>
+                </ion-item> -->
+              </ion-list>
+            </div>
           </ion-content>
         </div>
       </ion-tab>
@@ -175,10 +216,10 @@
           <ion-icon name="cube-outline"></ion-icon>
           Packages
         </ion-tab-button>
-        <ion-tab-button tab="library">
+        <!-- <ion-tab-button tab="library">
           <ion-icon name="cog-outline"></ion-icon>
           Settings
-        </ion-tab-button>
+        </ion-tab-button> -->
         <ion-tab-button tab="search">
           <ion-icon name="person-outline"></ion-icon>
           Profile

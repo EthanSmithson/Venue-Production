@@ -29,6 +29,12 @@ module.exports = app => {
     router.get("/trackMyPackages", users.trackPackages);
 
     router.post("/createTracking", users.createTracking);
+
+    router.get("/getSlug/:trackingNumber", users.getSlug);
+
+    router.get("/getMe/:myCookie", users.getMe);
+
+    router.post("/removePackage", users.removePackage);
   
     app.use('/api/users', router);
   };

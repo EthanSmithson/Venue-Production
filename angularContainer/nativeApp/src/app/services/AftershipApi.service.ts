@@ -15,12 +15,12 @@ export class AftershipApiService {
     constructor(private http: HttpClient) { }
 
     createTracking(formData: any): Observable<any> {
-      const headers = { 'content-type': 'application/json'};
-      const formDataJson = JSON.stringify(formData);
-      console.log(formData)
-      return this.http.post<any>(
-          this.baseUrl + `/api/users/createTracking`, formDataJson, {headers: headers}
-      ); 
+        const headers = { 'content-type': 'application/json'};
+        const formDataJson = JSON.stringify(formData);
+        console.log(formData)
+        return this.http.post<any>(
+            this.baseUrl + `/api/users/createTracking`, formDataJson, {headers: headers}
+        ); 
       }
 
       trackOrder(): Observable<any> {

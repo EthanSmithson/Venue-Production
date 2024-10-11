@@ -13,7 +13,7 @@ export class PackageCreationForm {
 
     createForm(): FormGroup {
         return this.formBuilder.group({
-            carrier: ['', [Validators.required]],
+            title: ['', [Validators.required]],
             trackingNumber: ['', Validators.required]
         },
         );

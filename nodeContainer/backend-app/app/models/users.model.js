@@ -114,7 +114,20 @@ Users.changePassword = (data, result) => {
 };
 
 Users.addPackage = (data, result) => {
-  sql.query(`INSERT INTO Packages (carrier, trackingNumber, userId) VALUES ('${data.carrier}', ${data.trackingNumber}, ${data.userId})`, (err, res) => {
+  sql.query(`INSERT INTO Packages (carrier, trackingNumber, userId, title) VALUES ('${data.slug}', ${data.trackingNumber}, ${data.userId}, '${data.title}')`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
+      return;
+    }
+  });
+};
+
+Users.removePackage = (data, result) => {
+  sql.query(`DELETE FROM Packages WHERE trackingNumber = ${data.trackingNumber}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -128,6 +141,19 @@ Users.addPackage = (data, result) => {
 
 Users.findId = (data, result) => {
   sql.query(`SELECT userId FROM Users WHERE email = '${data.myCookie}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
+      return;
+    }
+  });
+};
+
+Users.getMe = (data, result) => {
+  sql.query(`SELECT firstName FROM Users WHERE email = '${data.myCookie}'`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
