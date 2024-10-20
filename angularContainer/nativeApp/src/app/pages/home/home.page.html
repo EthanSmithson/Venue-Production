@@ -5,6 +5,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <ion-content>
   <div>
@@ -21,12 +24,47 @@
               <!-- <div>
                 <ion-button color="success" expand="block">Map</ion-button>
               </div> -->
+              <h1 style="font-size: xx-large; font-family: 'Libre Franklin', sans-serif;
+              font-optical-sizing: auto;
+              font-weight: 850;
+              font-style: regular; color: white; margin-left: -47vw;">Locations</h1>
               <ion-list>
-                <ion-item>
+
+                <!-- <ion-item id="open-modal" (click)="openProfModal()" [button]="true">
+                  <ion-icon color="danger" slot="start" name="list-circle" size="large"></ion-icon>
+                  <ion-label>Profile</ion-label>
+                </ion-item> -->
+
+                
+                @for (event of events; track events) {
+                  <ion-item>
+                    <ion-card (click)="viewVenue(event.id)" style="width: 93vw; height: 22vh;">
+                    <img style="opacity: 0.5;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: auto; background-position:50% 50%;" src="{{event.images[0].url}}">
+                      <ion-card-header>
+                        <ion-card-title style="font-size: x-large; font-family: 'Libre Franklin', sans-serif;
+                        font-optical-sizing: auto;
+                        font-weight: 850;
+                        font-style: regular; color: white;">{{event.name}}</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content style="  font-family: 'Quicksand', sans-serif;
+                      font-optical-sizing: auto;
+                      font-weight: 400;
+                      font-style: regular; color: white;">
+                           Miles Away: {{event.distance}}
+                           <!-- <ion-img src="{{event.images[0].url}}"></ion-img> -->
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-item>
+                }
+                <!-- <ion-item>
                   <ion-card>
                     <ion-card-header>
                       <ion-card-title>Shipping Update</ion-card-title>
-                      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
                     </ion-card-header>
                   
                     <ion-card-content>
@@ -42,7 +80,6 @@
                   <ion-card>
                     <ion-card-header>
                       <ion-card-title>Shipping Update</ion-card-title>
-                      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
                     </ion-card-header>
                   
                     <ion-card-content>
@@ -58,7 +95,6 @@
                   <ion-card>
                     <ion-card-header>
                       <ion-card-title>Shipping Update</ion-card-title>
-                      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
                     </ion-card-header>
                   
                     <ion-card-content>
@@ -69,8 +105,9 @@
                       <ion-button fill="clear">Dismiss</ion-button>
                     </div>
                   </ion-card>
-                </ion-item>
+                </ion-item> -->
               </ion-list>
+              <h1>Upcoming Venues</h1>
             </div>
           </ion-content>
         </div>
@@ -91,7 +128,7 @@
         <div id="radio-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>Packages</ion-title>
+              <ion-title>Events</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
@@ -126,7 +163,7 @@
             <ion-fab-button class="ion-margin" color="success">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
-            <ion-fab-list (clickOutside)="handleClickOutside()" side="top">
+            <ion-fab-list side="top">
               <form [formGroup]="form" (ngSubmit)="submitPackage(form.value)">
                 <ion-item *ngIf="labelInUseError || labelCreatedAlert" #removeLabelInUseError style="width: 56vw;
                 margin-left: -54vw;
@@ -176,12 +213,27 @@
                 <ion-ripple-effect></ion-ripple-effect>
                 <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
               </ion-avatar>
-              <ion-list style="width: 85%;" [inset]="true">
-                <ion-item [button]="true">
+              <ion-list style="width: 85%; margin-top: 5vh;" [inset]="true">
+                <ion-item id="open-modal" (click)="openProfModal()" [button]="true">
                   <ion-icon color="danger" slot="start" name="list-circle" size="large"></ion-icon>
                   <ion-label>Profile</ion-label>
                   <!-- <ion-note slot="end">6</ion-note> -->
                 </ion-item>
+                <ion-modal #modal trigger="open-modal" [canDismiss]="canDismiss" [presentingElement]="presentingElement">
+                  <ng-template>
+                    <ion-header>
+                      <ion-toolbar>
+                        <ion-title>Modal</ion-title>
+                        <ion-buttons slot="end">
+                          <ion-button (click)="modal.dismiss()">Close</ion-button>
+                        </ion-buttons>
+                      </ion-toolbar>
+                    </ion-header>
+                    <ion-content class="ion-padding">
+                      <p>You will be prompted when closing this modal.</p>
+                    </ion-content>
+                  </ng-template>
+                </ion-modal>
                 <ion-item [button]="true">
                   <ion-icon color="tertiary" slot="start" name="list-circle" size="large"></ion-icon>
                   <ion-label>Display</ion-label>
@@ -213,8 +265,8 @@
           Map
         </ion-tab-button>
         <ion-tab-button tab="radio">
-          <ion-icon name="cube-outline"></ion-icon>
-          Packages
+          <ion-icon name="musical-notes-outline"></ion-icon>
+          Events
         </ion-tab-button>
         <!-- <ion-tab-button tab="library">
           <ion-icon name="cog-outline"></ion-icon>

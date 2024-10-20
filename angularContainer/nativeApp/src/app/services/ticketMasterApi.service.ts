@@ -8,7 +8,7 @@ import { UserInfo } from '../pages/register/registerUser';
 @Injectable({
     providedIn: 'root'
 })
-export class AftershipApiService {
+export class TicketMasterApiService {
 
     baseUrl: string = "http://localhost:8080";
 
@@ -34,5 +34,27 @@ export class AftershipApiService {
             this.baseUrl + `/api/users/trackMyPackages`, {headers: headers}
         ); 
     }
+
+    geoHashing(data: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        const formDataJson = JSON.stringify(data);
+        console.log("this is it" + data)
+        return this.http.post<any>(
+            this.baseUrl + `/api/users/geoHash`, formDataJson, {headers: headers}
+        ); 
+    }
+
+    getCurrentLocation():Promise<any> {
+        return new Promise((resolve, reject) => {
+
+            navigator.geolocation.getCurrentPosition(resp => {
+      
+                resolve({lng: resp.coords.longitude, lat: resp.coords.latitude});
+              },
+              err => {
+                reject(err);
+              });
+          });
+      }
 
 }

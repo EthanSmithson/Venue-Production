@@ -24,7 +24,7 @@ module.exports = app => {
 
     router.get("/getId/:myCookie", users.findId);
 
-    router.get("/getMyPackages/:myCookie", users.getPackages);
+    router.post("/getMyVenues", users.getVenues);
 
     router.get("/trackMyPackages", users.trackPackages);
 
@@ -35,6 +35,10 @@ module.exports = app => {
     router.get("/getMe/:myCookie", users.getMe);
 
     router.post("/removePackage", users.removePackage);
+
+    router.post("/geoHash", users.geoHashing);
+
+    router.post("/getMyVenuesEvents", users.getMyVenuesEvents);
   
     app.use('/api/users', router);
   };

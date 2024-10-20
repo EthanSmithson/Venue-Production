@@ -114,7 +114,7 @@ Users.changePassword = (data, result) => {
 };
 
 Users.addPackage = (data, result) => {
-  sql.query(`INSERT INTO Packages (carrier, trackingNumber, userId, title) VALUES ('${data.slug}', ${data.trackingNumber}, ${data.userId}, '${data.title}')`, (err, res) => {
+  sql.query(`INSERT INTO Events (carrier, trackingNumber, userId, title) VALUES ('${data.slug}', ${data.trackingNumber}, ${data.userId}, '${data.title}')`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -127,7 +127,7 @@ Users.addPackage = (data, result) => {
 };
 
 Users.removePackage = (data, result) => {
-  sql.query(`DELETE FROM Packages WHERE trackingNumber = ${data.trackingNumber}`, (err, res) => {
+  sql.query(`DELETE FROM Events WHERE trackingNumber = ${data.trackingNumber}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -165,8 +165,8 @@ Users.getMe = (data, result) => {
   });
 };
 
-Users.getPackages = (data, result) => {
-  sql.query(`SELECT * FROM Packages WHERE userId = '${data.myCookie}'`, (err, res) => {
+Users.getEvents = (data, result) => {
+  sql.query(`SELECT * FROM Events WHERE userId = '${data.myCookie}'`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
