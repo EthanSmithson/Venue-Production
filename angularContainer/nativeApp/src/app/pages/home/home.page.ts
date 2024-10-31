@@ -15,6 +15,7 @@ import { ElementRef, Renderer2 } from '@angular/core';
 import { UiUxService } from 'src/app/services/UiUx.service';
 import { CheckboxCustomEvent } from '@ionic/angular/standalone';
 import { ActionSheetController } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,7 @@ export class HomePage implements OnInit {
   form: any = FormGroup;
   presentingElement: any = null;
 
-  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController) { }
+  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router) { }
 
   ngOnInit() {
     addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline })
@@ -166,9 +167,10 @@ export class HomePage implements OnInit {
   }
 
   viewVenue(data: any) {
-    this.FindEvents.getVenuesEvents({"venueId": data}).subscribe((results: any) => {
-      console.log(results)
-    });
+    this.router.navigate(['/venue'], { queryParams: { venueId: data } });
+    // this.FindEvents.getVenuesEvents({"venueId": data}).subscribe((results: any) => {
+    //   console.log(results)
+    // });
   }
   
 }

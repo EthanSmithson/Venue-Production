@@ -342,9 +342,9 @@ exports.getMyVenuesEvents = (req, res) => {
     resp.on('end', () => {
         let eventData = JSON.parse(data)
         let events = eventData._embedded;
-        // let eventsList = events.venues
+        let eventsList = events.events
         console.log(events);
-        // return res.json({"nearbyVenues": eventsList});
+        return res.json({"venueEvents": eventsList});
     })
 })
 .on('error', err => {
