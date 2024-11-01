@@ -351,3 +351,23 @@ exports.getMyVenuesEvents = (req, res) => {
     console.log("Error: ", err.message)
 })
 }
+
+exports.getEventDetails = (req, res) => {
+  console.log(req.body)
+  http.get(`https://app.ticketmaster.com/discovery/v2/events.json?size=1&apikey=AQnz8QPEolgr7ZyJ3W1qxNLwh46uf1GK&id=${req.body.eventId}`, resp => {
+    let data = ''
+    resp.on('data', chunk => {
+        data += chunk
+    })
+    resp.on('end', () => {
+        let eventData = JSON.parse(data)
+        let events = eventData._embedded;
+        let eventsList = events.events
+        console.log(events);
+        return res.json({"venueEvents": eventsList});
+    })
+})
+.on('error', err => {
+    console.log("Error: ", err.message)
+})
+}

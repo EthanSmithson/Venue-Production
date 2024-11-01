@@ -39,6 +39,8 @@ module.exports = app => {
     router.post("/geoHash", users.geoHashing);
 
     router.post("/getMyVenuesEvents", users.getMyVenuesEvents);
+
+    router.post("/getEventDetails", users.getEventDetails);
   
     app.use('/api/users', router);
   };
