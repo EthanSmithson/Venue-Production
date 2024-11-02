@@ -22,4 +22,12 @@ export class UiUxService {
         ); 
     }
 
+    getMyId(formData: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        // const formDataJson = JSON.stringify(formData);
+        return this.http.get<any>(
+            this.baseUrl + `/api/users/getMyId/${formData.myCookie}`, {headers: headers}
+        ); 
+    }
+
 }

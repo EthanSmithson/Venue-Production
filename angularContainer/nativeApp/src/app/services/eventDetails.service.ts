@@ -23,4 +23,13 @@ export class EventDetailsService {
         );
     }
 
+    saveEvent(data: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        const formDataJson = JSON.stringify(data);
+        console.log(data)
+        return this.http.post<any>(
+            this.baseUrl + `/api/users/saveEvent`, formDataJson, {headers: headers}
+        );
+    }
+
 }

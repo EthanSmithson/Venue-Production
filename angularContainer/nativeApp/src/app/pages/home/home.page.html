@@ -21,21 +21,11 @@
           </ion-header>
           <ion-content>
             <div class="flex-center-home">
-              <!-- <div>
-                <ion-button color="success" expand="block">Map</ion-button>
-              </div> -->
               <h1 style="font-size: xx-large; font-family: 'Libre Franklin', sans-serif;
               font-optical-sizing: auto;
               font-weight: 850;
               font-style: regular; color: white; margin-left: -47vw;">Locations</h1>
               <ion-list>
-
-                <!-- <ion-item id="open-modal" (click)="openProfModal()" [button]="true">
-                  <ion-icon color="danger" slot="start" name="list-circle" size="large"></ion-icon>
-                  <ion-label>Profile</ion-label>
-                </ion-item> -->
-
-                
                 @for (event of events; track events) {
                   <ion-item>
                     <ion-card (click)="viewVenue(event.id)" style="width: 93vw; height: 22vh;">
@@ -56,56 +46,10 @@
                       font-weight: 400;
                       font-style: regular; color: white;">
                            Miles Away: {{event.distance}}
-                           <!-- <ion-img src="{{event.images[0].url}}"></ion-img> -->
                       </ion-card-content>
                     </ion-card>
                   </ion-item>
                 }
-                <!-- <ion-item>
-                  <ion-card>
-                    <ion-card-header>
-                      <ion-card-title>Shipping Update</ion-card-title>
-                    </ion-card-header>
-                  
-                    <ion-card-content>
-                      Here's a small text description for the card content. Nothing more, nothing less.
-                    </ion-card-content>
-                    <div class="notiBtns">
-                      <ion-button fill="clear">View</ion-button>
-                      <ion-button fill="clear">Dismiss</ion-button>
-                    </div>
-                  </ion-card>
-                </ion-item>
-                <ion-item>
-                  <ion-card>
-                    <ion-card-header>
-                      <ion-card-title>Shipping Update</ion-card-title>
-                    </ion-card-header>
-                  
-                    <ion-card-content>
-                      Here's a small text description for the card content. Nothing more, nothing less.
-                    </ion-card-content>
-                    <div class="notiBtns">
-                      <ion-button fill="clear">View</ion-button>
-                      <ion-button fill="clear">Dismiss</ion-button>
-                    </div>
-                  </ion-card>
-                </ion-item>
-                <ion-item>
-                  <ion-card>
-                    <ion-card-header>
-                      <ion-card-title>Shipping Update</ion-card-title>
-                    </ion-card-header>
-                  
-                    <ion-card-content>
-                      Here's a small text description for the card content. Nothing more, nothing less.
-                    </ion-card-content>
-                    <div class="notiBtns">
-                      <ion-button fill="clear">View</ion-button>
-                      <ion-button fill="clear">Dismiss</ion-button>
-                    </div>
-                  </ion-card>
-                </ion-item> -->
               </ion-list>
               <!-- <h1>Upcoming Venues</h1> -->
             </div>
@@ -188,18 +132,6 @@
           </ion-fab>
         </div>
       </ion-tab>
-      <!-- <ion-tab tab="library">
-        <div id="library-page">
-          <ion-header>
-            <ion-toolbar>
-              <ion-title>Settings</ion-title>
-            </ion-toolbar>
-          </ion-header>
-          <ion-content>
-            <div class="example-content">Settings content</div>
-          </ion-content>
-        </div>
-      </ion-tab> -->
       <ion-tab tab="search">
         <div id="search-page">
           <ion-header>
@@ -239,16 +171,6 @@
                   <ion-label>Display</ion-label>
                   <!-- <ion-note slot="end">15</ion-note> -->
                 </ion-item>
-                <!-- <ion-item [button]="true">
-                  <ion-icon color="success" slot="start" name="list-circle" size="large"></ion-icon>
-                  <ion-label>Cleaning</ion-label>
-                  <ion-note slot="end">3</ion-note>
-                </ion-item>
-                <ion-item [button]="true">
-                  <ion-icon color="warning" slot="start" name="list-circle" size="large"></ion-icon>
-                  <ion-label>Reminders</ion-label>
-                  <ion-note slot="end">8</ion-note>
-                </ion-item> -->
               </ion-list>
             </div>
           </ion-content>
@@ -268,10 +190,6 @@
           <ion-icon name="musical-notes-outline"></ion-icon>
           Events
         </ion-tab-button>
-        <!-- <ion-tab-button tab="library">
-          <ion-icon name="cog-outline"></ion-icon>
-          Settings
-        </ion-tab-button> -->
         <ion-tab-button tab="search">
           <ion-icon name="person-outline"></ion-icon>
           Profile

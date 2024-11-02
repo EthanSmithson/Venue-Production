@@ -21,12 +21,12 @@
     <ion-content>
       @for (event of eventsList; track eventsList) {
         <ion-item class="eventsList">
-          <div (click)="openEventMenu(event.id)" style="width: 60%;">
+          <div (click)="openEventMenu(event.id)" style="width: 60%;" class="ion-padding">
             {{event.name}}
           </div>
-          <div style="float: right; display: flex; flex-direction: row; align-items: center; justify-content: center; padding-left: 1rem;">
-            <ion-button color="success" shape="round">
-              <ion-icon slot="icon-only" name="heart"></ion-icon>
+          <div style="float: right; display: flex; flex-direction: row; align-items: center; justify-content: center; padding-left: 1rem;" class="ion-padding">
+            <ion-button #heartBtn class="{{event.id}}" (click)="saveEvent(event.id)" color="success" shape="round">
+              <ion-icon [ngStyle]="{'color': activatedBtn.includes(event.id) ? 'white' : 'black'}" slot="icon-only" name="heart"></ion-icon>
             </ion-button>
             <ion-button style="width: 25vw;" color="success" size="small">
               Get Tickets

@@ -165,6 +165,19 @@ Users.getMe = (data, result) => {
   });
 };
 
+Users.getMyId = (data, result) => {
+  sql.query(`SELECT userId FROM Users WHERE email = '${data.myCookie}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
+      return;
+    }
+  });
+};
+
 Users.getEvents = (data, result) => {
   sql.query(`SELECT * FROM Events WHERE userId = '${data.myCookie}'`, (err, res) => {
     if (err) {
@@ -173,6 +186,19 @@ Users.getEvents = (data, result) => {
       return;
     } else {
       result(null, res);
+      return;
+    }
+  });
+};
+
+Users.saveEvent = (data, result) => {
+  sql.query(`INSERT INTO SavedEvents (eventId, userId, venueId) VALUES ('${data.eventId}', ${data.userId}, '${data.venueId}')`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
       return;
     }
   });

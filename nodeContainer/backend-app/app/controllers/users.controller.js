@@ -321,6 +321,23 @@ exports.getMe = (req, res) => {
   });
 }
 
+exports.getMyId = (req, res) => {
+  User.getMyId((req.params), (err, data) => {
+    // console.log(req.params);
+    if (err) {
+      if (err.kind === "not_found") {
+        res.json({
+          status: 2
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving User with email " + req.params
+        });
+      }
+    } else res.json( data );
+  });
+}
+
 exports.geoHashing = (req, res) => {
   console.log(req.body);
   const hash = geohash.encode(req.body.lat, req.body.lng, 9); // Encode coordinates
@@ -370,4 +387,26 @@ exports.getEventDetails = (req, res) => {
 .on('error', err => {
     console.log("Error: ", err.message)
 })
+}
+
+exports.saveEvent = (req, res) => {
+   // Validate request
+   if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  // console.log(req.body);
+
+  Users.saveEvent((req.body), (err, data) => {
+    if ( err && err.errno == 1062) {
+      res.json(500);
+    } else if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred."
+      });
+    else res.json({status: 1});
+  });
 }
