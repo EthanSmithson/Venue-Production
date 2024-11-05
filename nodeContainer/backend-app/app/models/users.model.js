@@ -204,4 +204,30 @@ Users.saveEvent = (data, result) => {
   });
 };
 
+Users.removeEvent = (data, result) => {
+  sql.query(`DELETE FROM SavedEvents WHERE eventId = '${data.eventId}' AND userId = ${data.userId} AND venueId = '${data.venueId}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res[0]);
+      return;
+    }
+  });
+};
+
+Users.getSavedEvents = (data, result) => {
+  sql.query(`SELECT * FROM SavedEvents WHERE userId = '${data.myCookie}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
 module.exports = Users;

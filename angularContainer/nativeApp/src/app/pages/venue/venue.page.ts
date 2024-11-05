@@ -34,14 +34,27 @@ export class VenuePage implements OnInit {
 
   ngOnInit() {
     addIcons({ heart })
+    this.activatedBtn = []
 
     this.venueId = this.route.snapshot.queryParams['venueId']
 
     this.FindEvents.getVenuesEvents({"venueId": this.venueId}).subscribe((results: any) => {
       console.log(results)
       this.eventsList = results.venueEvents;
-      this.activatedBtn = []
     });
+
+    this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+      console.log(results);
+      this.EventsDetails.getSavedEvents({ "myCookie": results.userId }).subscribe((results: any) => {
+        console.log(results)
+        for (let i = 0; i < results.length; i++) {
+          console.log(results[i].eventId)
+          this.activatedBtn.push(results[i].eventId)
+        }
+      });
+    })
+
+
 
   }
 
@@ -51,10 +64,21 @@ export class VenuePage implements OnInit {
 
   saveEvent(eventId: any) {
     if (this.activatedBtn.includes(eventId)) {
-      this.activatedBtn.pop(eventId)
+      const index = this.activatedBtn.indexOf(eventId);
+      if (index > -1) {
+        this.activatedBtn.splice(index, 1);
+      }
+      // this.activatedBtn.remove(eventId)
+      this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+        console.log(results);
+        this.EventsDetails.removeEvent({"eventId": eventId, "userId": results.userId, "venueId": this.venueId}).subscribe((results: any) => {
+          console.log(results)
+          // this.eventDetails = results
+        });
+      })
     } else {
       this.activatedBtn.push(eventId)
-      console.log(this.activatedBtn)
+      // console.log(this.activatedBtn)
       this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
         console.log(results);
         this.EventsDetails.saveEvent({"eventId": eventId, "userId": results.userId, "venueId": this.venueId}).subscribe((results: any) => {

@@ -410,3 +410,42 @@ exports.saveEvent = (req, res) => {
     else res.json({status: 1});
   });
 }
+
+exports.removeEvent = (req, res) => {
+  // Validate request
+  if (!req.body) {
+   res.status(400).send({
+     message: "Content can not be empty!"
+   });
+ }
+
+ // console.log(req.body);
+
+ Users.removeEvent((req.body), (err, data) => {
+   if ( err && err.errno == 1062) {
+     res.json(500);
+   } else if (err)
+     res.status(500).send({
+       message:
+         err.message || "Some error occurred."
+     });
+   else res.json({status: 1});
+ });
+}
+
+exports.getSavedEvents = (req, res) => {
+  User.getSavedEvents((req.params), (err, data) => {
+    // console.log(req.params);
+    if (err) {
+      if (err.kind === "not_found") {
+        res.json({
+          status: 2
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving User with email " + req.params
+        });
+      }
+    } else res.json( data );
+  });
+}

@@ -32,4 +32,22 @@ export class EventDetailsService {
         );
     }
 
+    removeEvent(data: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        const formDataJson = JSON.stringify(data);
+        console.log(data)
+        return this.http.post<any>(
+            this.baseUrl + `/api/users/removeEvent`, formDataJson, {headers: headers}
+        );
+    }
+
+    getSavedEvents(data: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        // const formDataJson = JSON.stringify(formData);
+        // console.log("testing this " + data.myCookie)
+        return this.http.get<any>(
+            this.baseUrl + `/api/users/getSavedEvents/${data.myCookie}`, {headers: headers}
+        );
+    }
+
 }
