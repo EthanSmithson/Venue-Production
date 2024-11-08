@@ -27,7 +27,28 @@
               font-style: regular; color: white; margin-left: -47vw;">Locations</h1>
               <ion-list>
                 @for (event of events; track events) {
-                  <ion-item>
+                  <ion-card (click)="viewVenue(event.id)">
+                    <img style="opacity: 0.5;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: auto; background-position:50% 50%;" alt="Silhouette of mountains" src="{{event.images[0].url}}" />
+                    <ion-card-header>
+                      <ion-card-title style=" font-family: 'Libre Franklin', sans-serif;
+                      font-optical-sizing: auto;
+                      font-weight: 500;
+                      font-style: regular;">{{event.name}}</ion-card-title>
+                      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
+                    </ion-card-header>
+                  
+                    <ion-card-content style=" font-family: 'Libre Franklin', sans-serif;
+                    font-optical-sizing: auto;
+                    font-weight: 300;
+                    font-style: regular;">
+                      Miles Away: {{event.distance}}
+                    </ion-card-content>
+                  </ion-card>
+                  <!-- <ion-item>
                     <ion-card (click)="viewVenue(event.id)" style="width: 93vw; height: 22vh;">
                     <img style="opacity: 0.5;
                     position: absolute;
@@ -48,7 +69,7 @@
                            Miles Away: {{event.distance}}
                       </ion-card-content>
                     </ion-card>
-                  </ion-item>
+                  </ion-item> -->
                 }
               </ion-list>
               <!-- <h1>Upcoming Venues</h1> -->

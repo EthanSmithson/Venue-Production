@@ -351,7 +351,7 @@ exports.geoHashing = (req, res) => {
 
 exports.getMyVenuesEvents = (req, res) => {
   console.log(req.body)
-  http.get(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${req.body.venueId}&size=5&apikey=AQnz8QPEolgr7ZyJ3W1qxNLwh46uf1GK&segmentId=KZFzniwnSyZfZ7v7nJ`, resp => {
+  http.get(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${req.body.venueId}&size=50&apikey=AQnz8QPEolgr7ZyJ3W1qxNLwh46uf1GK&segmentId=KZFzniwnSyZfZ7v7nJ`, resp => {
     let data = ''
     resp.on('data', chunk => {
         data += chunk

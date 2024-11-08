@@ -14,11 +14,48 @@
     <ion-buttons slot="start">
       <ion-back-button color="success"></ion-back-button>
     </ion-buttons>
-    <ion-title>Event</ion-title>
+    <ion-title>Events</ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-content>
   <div class="flex-center" id="main-content">
     <ion-content>
-     
+      <div class="flex-center-home">
+      <h1 class="ion-padding" style="font-size: x-large; font-family: 'Libre Franklin', sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 850;
+        font-style: regular; color: white;">{{eventName}}</h1>
+        <ion-img class="ion-padding" src="{{eventImages}}">
+        </ion-img>
+        <ion-card>
+          <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+          <ion-card-header>
+            <ion-card-title>Event Info</ion-card-title>
+            <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
+          </ion-card-header>
+        
+          <ion-card-content>
+            Here's a small text description for the card content. Nothing more, nothing less.
+          </ion-card-content>
+        </ion-card>
+        <div>
+          <ion-button (click)="redirectToTickets(eventTickets)" style="position: fixed;
+          left: 0;
+          bottom: 10px;
+          right: 0;
+          width: 86vw;" class="ion-padding" shape="round" color="success" position="bottom" expand="full">
+            Get Tickets
+          </ion-button>
+          <ion-button style="position: fixed;
+          left: 85vw;
+          bottom: 28px;
+          right: 0;
+          width: 11vw;
+          height: 4.8vh;" color="success">
+            <ion-icon slot="icon-only" name="heart"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
     </ion-content>
   </div>
+</ion-content>
