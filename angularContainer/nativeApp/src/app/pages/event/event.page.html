@@ -49,13 +49,13 @@
           width: 86vw;" class="ion-padding" shape="round" color="success" position="bottom" expand="full">
             Get Tickets
           </ion-button>
-          <ion-button style="position: fixed;
+          <ion-button (click)="isEventSaved(eventId)" style="position: fixed;
           left: 85vw;
           bottom: 28px;
           right: 0;
           width: 11vw;
           height: 4.8vh;" color="success">
-            <ion-icon slot="icon-only" name="heart"></ion-icon>
+            <ion-icon [ngStyle]="{'color': isSaved ? 'white' : 'black'}" slot="icon-only" name="heart"></ion-icon>
           </ion-button>
         </div>
       </div>

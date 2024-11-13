@@ -49,6 +49,8 @@ module.exports = app => {
     router.post("/removeEvent", users.removeEvent);
     
     router.get("/getSavedEvents/:myCookie", users.getSavedEvents);
+
+    router.get("/getSavedEvent/:userId/:eventId", users.getSavedEvent);
   
     app.use('/api/users', router);
   };

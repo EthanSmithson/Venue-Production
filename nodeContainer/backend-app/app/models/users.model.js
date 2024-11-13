@@ -230,4 +230,17 @@ Users.getSavedEvents = (data, result) => {
   });
 };
 
+Users.getSavedEvent = (data, result) => {
+  sql.query(`SELECT COUNT(*) AS isSaved FROM SavedEvents WHERE userId = ${data.userId} AND eventId = '${data.eventId}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
 module.exports = Users;

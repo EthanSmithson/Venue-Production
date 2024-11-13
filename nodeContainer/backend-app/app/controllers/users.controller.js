@@ -449,3 +449,20 @@ exports.getSavedEvents = (req, res) => {
     } else res.json( data );
   });
 }
+
+exports.getSavedEvent = (req, res) => {
+  User.getSavedEvent((req.params), (err, data) => {
+    // console.log(req.params);
+    if (err) {
+      if (err.kind === "not_found") {
+        res.json({
+          status: 2
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving User with email " + req.params
+        });
+      }
+    } else res.json( data[0] );
+  });
+}
