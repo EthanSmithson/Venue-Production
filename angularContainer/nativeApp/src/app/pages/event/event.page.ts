@@ -46,11 +46,6 @@ export class EventPage implements AfterViewInit {
 
   ngAfterViewInit() {
 
-    let loader = new Loader({
-      apiKey: 'AIzaSyD4AJX7dsVR4DkYHUP-J3exqx9c4Q4ucL8',
-      version: "weekly"
-    })
-
     addIcons({ heart })
     
     this.EventsDetails.getEventDetails({"eventId": this.route.snapshot.queryParams['eventId']}).subscribe((results: any) => {
@@ -69,107 +64,120 @@ export class EventPage implements AfterViewInit {
       this.LatLng = { "lat": Number(this.eventDetails._embedded.venues[0].location.latitude), "lng" : Number(this.eventDetails._embedded.venues[0].location.longitude) }
       console.log(this.LatLng)
 
-      loader
-        .importLibrary('maps')
-        .then(({Map}) => {
-          new Map(this.mapEl.nativeElement, {
-            center: this.LatLng,
-            zoom: 13, 
+      let map;
+      async function initMap(myMap: any, latLng: any): Promise<void> {
+
+        // Request needed libraries.
+        const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+        // The map, centered at Uluru
+        map = new Map(
+          myMap,
+          {
+            zoom: 11,
+            center: latLng,
+            mapId: "DEMO_MAP_ID",
             styles: 
-              [
-                {
-                  "featureType": "administrative.land_parcel",
-                  "elementType": "labels",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "poi",
-                  "elementType": "labels.text",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "poi.business",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road",
-                  "elementType": "labels.icon",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.arterial",
-                  "elementType": "labels",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.highway",
-                  "stylers": [
-                    {
-                      "visibility": "simplified"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.highway",
-                  "elementType": "labels",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.local",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.local",
-                  "elementType": "labels",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "transit",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                }
-              ]
-            // mapId: "72dbc0caa69649c6"
-          });
-        })
-        .catch((e) => {
-          // do something
-      });
+            [
+              {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi.business",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road",
+                "elementType": "labels.icon",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.arterial",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "stylers": [
+                  {
+                    "visibility": "simplified"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "transit",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              }
+            ]
+          }
+        );
+
+        // The marker, positioned at Uluru
+        const marker = new AdvancedMarkerElement({
+          map: map,
+          position: latLng ? latLng : results,
+          title: 'Venue'
+        });
+      }
+      initMap(this.mapEl.nativeElement, this.LatLng);
 
       this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
         console.log(results);
@@ -222,7 +230,7 @@ export class EventPage implements AfterViewInit {
 
   formatDate(dateString: any) {
     const [year, month, day] = dateString.split('-');
-    return `${month}-${day}-${year}`;
+    return `${month}/${day}/${year}`;
   }
 
   convertTo12Hour(time24: any) {
@@ -241,10 +249,12 @@ export class EventPage implements AfterViewInit {
   }
 
   viewMap(latLng: any) {
-    console.log(latLng)
-    this.openMap.latLng = latLng;
-    this.openMap.isOpenMap = true; 
-    this.router.navigate(['/home']);
+    setTimeout(() => {
+      this.openMap.latLng = latLng;
+      this.openMap.isOpenMap = true; 
+      this.router.navigate(['/home']);
+    }, 100);
+    
   }
 
 }

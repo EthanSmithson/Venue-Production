@@ -191,7 +191,7 @@ exports.findId = (req, res) => {
 
 exports.getVenues = (req, res) => {
   // console.log(req.body.geoHash)
-  http.get(`https://app.ticketmaster.com/discovery/v2/venues.json?radius=50&geoPoint=${req.body.geoHash}&size=10&apikey=AQnz8QPEolgr7ZyJ3W1qxNLwh46uf1GK`, resp => {
+  http.get(`https://app.ticketmaster.com/discovery/v2/venues.json?radius=200&geoPoint=${req.body.geoHash}&size=10&apikey=AQnz8QPEolgr7ZyJ3W1qxNLwh46uf1GK`, resp => {
     let data = ''
     resp.on('data', chunk => {
         data += chunk

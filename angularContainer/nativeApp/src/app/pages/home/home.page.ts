@@ -67,14 +67,6 @@ export class HomePage implements OnInit {
       })
     })
 
-    // this.FindEvents.getUserId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
-    //   this.FindEvents.getEvents(results.userId).subscribe((results: any) => {
-    //     console.log(results);
-    //     this.packages = results;
-    //     console.log(this.packages);
-    //   })
-    // });
-
     this.UiUxService.getMe({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
       console.log(results);
       this.myName = results.firstName;
@@ -94,114 +86,6 @@ export class HomePage implements OnInit {
      if (this.openMap.isOpenMap) {
         this.openMapTab();
       }
-      let loader = new Loader({
-        apiKey: 'AIzaSyD4AJX7dsVR4DkYHUP-J3exqx9c4Q4ucL8',
-        version: "weekly"
-      })
-
-      this.latLng = this.openMap.latLng
-  
-      loader
-      .importLibrary('maps')
-      .then(({Map}) => {
-        new Map(this.mapEl.nativeElement, {
-          center: this.latLng,
-          zoom: 11, 
-          styles: 
-            [
-              {
-                "featureType": "administrative.land_parcel",
-                "elementType": "labels",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "labels.text",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "poi.business",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "road",
-                "elementType": "labels.icon",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "road.arterial",
-                "elementType": "labels",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "road.highway",
-                "stylers": [
-                  {
-                    "visibility": "simplified"
-                  }
-                ]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "labels",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "road.local",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "road.local",
-                "elementType": "labels",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              },
-              {
-                "featureType": "transit",
-                "stylers": [
-                  {
-                    "visibility": "off"
-                  }
-                ]
-              }
-            ]
-          // mapId: "72dbc0caa69649c6"
-        });
-      })
-      .catch((e) => {
-        // do something
-      });
   }
 
   canDismiss = async () => {
@@ -299,7 +183,9 @@ export class HomePage implements OnInit {
   }
 
   viewVenue(data: any) {
-    this.router.navigate(['/venue'], { queryParams: { venueId: data } });
+    setTimeout(() => {
+      this.router.navigate(['/venue'], { queryParams: { venueId: data } });
+    }, 100);
     // this.FindEvents.getVenuesEvents({"venueId": data}).subscribe((results: any) => {
     //   console.log(results)
     // });
@@ -312,7 +198,166 @@ export class HomePage implements OnInit {
   }
 
   openMainMap() {
+
+    this.TicketMasterApiService.getCurrentLocation().then(results => {
+      console.log(results);
+      this.TicketMasterApiService.geoHashing(results).subscribe((results: any) => {
+        console.log(results.geoHash)
+        if (results.geoHash) {
+          this.FindEvents.getVenues(results).subscribe((results: any) => {
+            console.log(results.nearbyVenues)
+            let eventsList = [];
+            for (let i=0; i<results.nearbyVenues.length; i++) {
+              if (results.nearbyVenues[i].images[0].url) {
+                eventsList.push(results.nearbyVenues[i])
+              }
+              this.events = eventsList
+            }
+          })
+        }
+      })
+    });
+
     console.log(this.mapEl.nativeElement)
+    console.log(this.events)
+    let venuesLatLng = [];
+
+    for (let i=0; i < this.events.length; i++) {
+      venuesLatLng.push(this.events[i].location)
+      venuesLatLng[i].lng = Number(venuesLatLng[i].longitude)
+      venuesLatLng[i].lat = Number(venuesLatLng[i].latitude)
+      delete venuesLatLng[i].latitude;
+      delete venuesLatLng[i].longitude;
+    }
+    console.log(venuesLatLng)
+
+    this.latLng = this.openMap.latLng
+
+    this.TicketMasterApiService.getCurrentLocation().then(results => {
+      console.log(results);
+      venuesLatLng.push(results);
+
+      let map;
+      async function initMap(myMap: any, latLng: object, venuesLatLng: any): Promise<void> {
+
+        // Request needed libraries.
+        const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+        // The map, centered at Uluru
+        map = new Map(
+          myMap,
+          {
+            zoom: 11,
+            center: latLng ? latLng : results,
+            mapId: "DEMO_MAP_ID",
+            styles: 
+            [
+              {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi.business",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road",
+                "elementType": "labels.icon",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.arterial",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "stylers": [
+                  {
+                    "visibility": "simplified"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "transit",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              }
+            ]
+          }
+        );
+
+        const marker = [];
+        for (let i=0; i<venuesLatLng.length; i++) {
+          console.log(venuesLatLng[i])
+          marker.push(new AdvancedMarkerElement({
+            map: map,
+            position: venuesLatLng ? venuesLatLng[i] : results,
+            title: 'Venue'
+          }));
+        }
+        console.log(marker)
+        
+      }
+      initMap(this.mapEl.nativeElement, this.latLng, venuesLatLng);
+      this.openMap.latLng = results;
+      })
+    }
+    
   }
-  
-}
