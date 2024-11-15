@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg} from '@ionic/angular/standalone';
@@ -17,6 +17,9 @@ import { CheckboxCustomEvent } from '@ionic/angular/standalone';
 import { ActionSheetController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { OpenMap } from 'src/app/services/openMap.service';
+import { Output, EventEmitter } from '@angular/core';
+import { Loader } from '@googlemaps/js-api-loader';
 
 @Component({
   selector: 'app-home',
@@ -30,10 +33,14 @@ export class HomePage implements OnInit {
   form: any = FormGroup;
   presentingElement: any = null;
   latLng: any;
-  openMap: boolean;
+  // openMap: boolean;
   @ViewChild('mapTab') mapTab!: ElementRef;
-
-  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute) { }
+  @ViewChild('homeTab') homeTab!: ElementRef;
+  mapTabBtn: any;
+  homeTabBtn: any;
+  @ViewChild('mapEl') mapEl!: ElementRef;
+  
+  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap) { }
 
   ngOnInit() {
     addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline })
@@ -75,16 +82,126 @@ export class HomePage implements OnInit {
 
     this.presentingElement = document.querySelector('.ion-page');
 
-    // this.latLng = this.route.snapshot.queryParams['latLng']
-    // this.openMap = this.route.snapshot.queryParams['map']
-    if (this.route.snapshot.queryParams['map']) {
-      this.openMap = this.route.snapshot.queryParams['map']
-      console.log(this.openMap)
+    if (this.openMap.latLng) {
+      this.latLng = this.openMap.latLng
+    } else {
+      // this.latLng = 
     }
-    // if (this.openMap) {
-    //   this.openMapTab();
-    // }
-    
+
+  }
+
+  ionViewWillEnter() {
+     if (this.openMap.isOpenMap) {
+        this.openMapTab();
+      }
+      let loader = new Loader({
+        apiKey: 'AIzaSyD4AJX7dsVR4DkYHUP-J3exqx9c4Q4ucL8',
+        version: "weekly"
+      })
+
+      this.latLng = this.openMap.latLng
+  
+      loader
+      .importLibrary('maps')
+      .then(({Map}) => {
+        new Map(this.mapEl.nativeElement, {
+          center: this.latLng,
+          zoom: 11, 
+          styles: 
+            [
+              {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi.business",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road",
+                "elementType": "labels.icon",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.arterial",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "stylers": [
+                  {
+                    "visibility": "simplified"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "featureType": "transit",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              }
+            ]
+          // mapId: "72dbc0caa69649c6"
+        });
+      })
+      .catch((e) => {
+        // do something
+      });
   }
 
   canDismiss = async () => {
@@ -189,8 +306,13 @@ export class HomePage implements OnInit {
   }
 
   openMapTab() {
-    console.log(this.mapTab.nativeElement)
-    console.log("help")
+    this.mapTabBtn = this.mapTab;
+    this.mapTabBtn.el.click();
+    this.openMap.isOpenMap = false;
+  }
+
+  openMainMap() {
+    console.log(this.mapEl.nativeElement)
   }
   
 }

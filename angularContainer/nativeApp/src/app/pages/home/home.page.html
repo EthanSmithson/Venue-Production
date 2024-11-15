@@ -86,7 +86,9 @@
             </ion-toolbar>
           </ion-header>
           <ion-content>
-            <div class="example-content">Map content</div>
+            <div class="example-content">
+              <div #mapEl id="mapEl" class="map"></div>
+            </div>
           </ion-content>
         </div>
       </ion-tab>
@@ -204,7 +206,7 @@
           <ion-icon name="home-outline"></ion-icon>
           Home
         </ion-tab-button>
-        <ion-tab-button #mapTab id="mapTab" tab="map">
+        <ion-tab-button (click)="openMainMap()" #mapTab id="mapTab" tab="map">
           <ion-icon name="map-outline"></ion-icon>
           Map
         </ion-tab-button>

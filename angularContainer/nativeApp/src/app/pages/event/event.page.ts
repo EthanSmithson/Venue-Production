@@ -14,6 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { UiUxService } from 'src/app/services/UiUx.service';
 import { IsSaved } from 'src/app/services/isSaved.service';
 import { Router } from '@angular/router';
+import { OpenMap } from 'src/app/services/openMap.service';
 
 @Component({
   selector: 'app-event',
@@ -41,7 +42,7 @@ export class EventPage implements AfterViewInit {
   userId: number;
   isToastOpen = false;
   
-  constructor(private route: ActivatedRoute, private cookieService: CookieService, public isSaved: IsSaved, private router: Router) { }
+  constructor(private route: ActivatedRoute, private cookieService: CookieService, public isSaved: IsSaved, private router: Router, public openMap: OpenMap) { }
 
   ngAfterViewInit() {
 
@@ -241,7 +242,9 @@ export class EventPage implements AfterViewInit {
 
   viewMap(latLng: any) {
     console.log(latLng)
-    this.router.navigate(['/home'], { queryParams: { latLng: latLng, map: true } });
+    this.openMap.latLng = latLng;
+    this.openMap.isOpenMap = true; 
+    this.router.navigate(['/home']);
   }
 
 }
