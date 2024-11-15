@@ -16,6 +16,7 @@ import { UiUxService } from 'src/app/services/UiUx.service';
 import { CheckboxCustomEvent } from '@ionic/angular/standalone';
 import { ActionSheetController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -28,8 +29,11 @@ export class HomePage implements OnInit {
 
   form: any = FormGroup;
   presentingElement: any = null;
+  latLng: any;
+  openMap: boolean;
+  @ViewChild('mapTab') mapTab!: ElementRef;
 
-  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router) { }
+  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline })
@@ -70,6 +74,17 @@ export class HomePage implements OnInit {
     })
 
     this.presentingElement = document.querySelector('.ion-page');
+
+    // this.latLng = this.route.snapshot.queryParams['latLng']
+    // this.openMap = this.route.snapshot.queryParams['map']
+    if (this.route.snapshot.queryParams['map']) {
+      this.openMap = this.route.snapshot.queryParams['map']
+      console.log(this.openMap)
+    }
+    // if (this.openMap) {
+    //   this.openMapTab();
+    // }
+    
   }
 
   canDismiss = async () => {
@@ -171,6 +186,11 @@ export class HomePage implements OnInit {
     // this.FindEvents.getVenuesEvents({"venueId": data}).subscribe((results: any) => {
     //   console.log(results)
     // });
+  }
+
+  openMapTab() {
+    console.log(this.mapTab.nativeElement)
+    console.log("help")
   }
   
 }

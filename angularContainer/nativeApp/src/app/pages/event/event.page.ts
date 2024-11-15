@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, HashLocationStrategy } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonBackButton, IonHeader, IonTitle, IonToolbar, IonButtons, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonBackButton, IonHeader, IonTitle, IonToolbar, IonButtons, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, IonToast, IonRippleEffect } from '@ionic/angular/standalone';
 import { EventDetailsService } from 'src/app/services/eventDetails.service';
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -12,13 +12,15 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { ViewChild, ElementRef } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { UiUxService } from 'src/app/services/UiUx.service';
+import { IsSaved } from 'src/app/services/isSaved.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event',
   templateUrl: './event.page.html',
   styleUrls: ['./event.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, GoogleMapsModule ]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, GoogleMapsModule, IonToast, IonRippleEffect ]
 })
 export class EventPage implements AfterViewInit {
 
@@ -34,11 +36,12 @@ export class EventPage implements AfterViewInit {
   eventTickets: String;
   eventId: number;
   LatLng: any;
-  isSaved: number;
+  // isSaved: number;
   venueId: any;
   userId: number;
+  isToastOpen = false;
   
-  constructor(private route: ActivatedRoute, private cookieService: CookieService) { }
+  constructor(private route: ActivatedRoute, private cookieService: CookieService, public isSaved: IsSaved, private router: Router) { }
 
   ngAfterViewInit() {
 
@@ -58,7 +61,10 @@ export class EventPage implements AfterViewInit {
       this.eventTickets = this.eventDetails.url;
       this.eventId = this.eventDetails.id;
       this.venueId = this.eventDetails._embedded.venues[0].id;
-      console.log(this.eventDetails._embedded.venues[0].location)
+      this.eventStartDate = this.formatDate(this.eventDetails.dates.start.localDate).toString().replace(/(^|-)0+/g, "$1");
+      console.log(this.eventDetails.dates.start.localTime.slice(0, 5).toString())
+      this.eventStartTime = this.convertTo12Hour(this.eventDetails.dates.start.localTime.slice(0, 5).toString());
+      console.log(this.eventStartTime)
       this.LatLng = { "lat": Number(this.eventDetails._embedded.venues[0].location.latitude), "lng" : Number(this.eventDetails._embedded.venues[0].location.longitude) }
       console.log(this.LatLng)
 
@@ -167,8 +173,8 @@ export class EventPage implements AfterViewInit {
       this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
         console.log(results);
         this.EventsDetails.getSavedEvent({"eventId": this.route.snapshot.queryParams['eventId'], userId: results.userId}).subscribe((results: any) => {
-          this.isSaved = results.isSaved
-          console.log(this.isSaved)
+          this.isSaved.isSaved = results.isSaved
+          console.log(this.isSaved.isSaved)
         })
       })
       
@@ -181,25 +187,61 @@ export class EventPage implements AfterViewInit {
     this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
       this.userId = results.userId;
       this.EventsDetails.getSavedEvent({"eventId": this.route.snapshot.queryParams['eventId'], userId: results.userId}).subscribe((results: any) => {
-        this.isSaved = results.isSaved;
-        if (this.isSaved == 1) {
+        this.isSaved.isSaved = results.isSaved;
+        if (this.isSaved.isSaved == 1) {
           this.EventsDetails.removeEvent({"eventId": eventId, "userId": this.userId, "venueId": this.venueId}).subscribe((results: any) => {
             console.log(results)
-            this.isSaved = 0;
+            this.isSaved.isSaved = 0;
           });
         } else {
           this.EventsDetails.saveEvent({"eventId": eventId, "userId": this.userId, "venueId": this.venueId}).subscribe((results: any) => {
             console.log(results)
-            this.isSaved = 1;
+            this.isSaved.isSaved = 1;
           });
         }
       })
     })
+    if (this.isSaved.isSaved !== 1) {
+      this.setOpen(true);
+    }
   }
 
   redirectToTickets(redirectLink: any) {
     console.log(redirectLink)
     window.location.href = redirectLink;
+  }
+
+  clickedEventsBackBtn() {
+    this.isSaved.comingFromPageEvents = true;
+  }
+
+  setOpen(isOpen: boolean) {
+    this.isToastOpen = isOpen;
+  }
+
+  formatDate(dateString: any) {
+    const [year, month, day] = dateString.split('-');
+    return `${month}-${day}-${year}`;
+  }
+
+  convertTo12Hour(time24: any) {
+    let [hours, minutes] = time24.split(':');
+    console.log(hours, minutes)
+    let period = 'AM';
+  
+    if (hours >= 12) {
+      period = 'PM';
+      if (hours > 12) {
+        hours -= 12;
+      }
+    }
+  
+    return `${hours}:${minutes} ${period}`;
+  }
+
+  viewMap(latLng: any) {
+    console.log(latLng)
+    this.router.navigate(['/home'], { queryParams: { latLng: latLng, map: true } });
   }
 
 }

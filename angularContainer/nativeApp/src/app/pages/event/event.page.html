@@ -11,7 +11,7 @@
 </head>
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons (click)="clickedEventsBackBtn()" slot="start">
       <ion-back-button color="success"></ion-back-button>
     </ion-buttons>
     <ion-title>Events</ion-title>
@@ -27,18 +27,18 @@
         font-style: regular; color: white;">{{eventName}}</h1>
         <ion-img class="ion-padding" src="{{eventImages}}">
         </ion-img>
-        <ion-card>
-          <div #mapEl id="mapEl" class="map">
-            hello
-          </div>
+        <ion-card (click)="viewMap(LatLng)" class="ion-activatable ripple-parent">
+          <ion-ripple-effect></ion-ripple-effect>
+          <div #mapEl id="mapEl" class="map"></div>
           <!-- <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" /> -->
           <ion-card-header>
             <ion-card-title>Event Info</ion-card-title>
             <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
           </ion-card-header>
         
-          <ion-card-content>
-            Here's a small text description for the card content. Nothing more, nothing less.
+          <ion-card-content class="eventCard">
+            <div>Event Date: {{eventStartDate}}</div>
+            <div>Start Time: {{eventStartTime}}</div>
           </ion-card-content>
         </ion-card>
         <div>
@@ -55,10 +55,17 @@
           right: 0;
           width: 11vw;
           height: 4.8vh;" color="success">
-            <ion-icon [ngStyle]="{'color': isSaved ? 'white' : 'black'}" slot="icon-only" name="heart"></ion-icon>
+            <ion-icon [ngStyle]="{'color': isSaved.isSaved ? 'white' : 'black'}" slot="icon-only" name="heart"></ion-icon>
           </ion-button>
         </div>
       </div>
+      <ion-toast
+      [isOpen]="isToastOpen"
+      message="Event Saved"
+      [duration]="4000"
+      (didDismiss)="setOpen(false)"
+      color="light"
+    ></ion-toast>
     </ion-content>
   </div>
 </ion-content>
