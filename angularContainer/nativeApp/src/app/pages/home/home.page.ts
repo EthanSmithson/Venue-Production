@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg} from '@ionic/angular/standalone';
-import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline } from 'ionicons/icons';
+import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, exit } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PackageCreationForm } from './form/packageCreation.page.form';
@@ -39,8 +39,9 @@ export class HomePage implements OnInit {
   mapTabBtn: any;
   homeTabBtn: any;
   @ViewChild('mapEl') mapEl!: ElementRef;
+  @ViewChild('svgPerson') svgPerson!: ElementRef;
   
-  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap) { }
+  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
 
   ngOnInit() {
     addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline })
@@ -242,13 +243,13 @@ export class HomePage implements OnInit {
 
         // Request needed libraries.
         const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
         // The map, centered at Uluru
         map = new Map(
           myMap,
           {
-            zoom: 11,
+            zoom: 12.5,
             center: latLng ? latLng : results,
             mapId: "DEMO_MAP_ID",
             styles: 
@@ -343,20 +344,45 @@ export class HomePage implements OnInit {
           }
         );
 
+        const myPerson = document.createElement('img');
+        // myPerson.classList.add("svgPerson");
+        myPerson.id = "svgPerson";
+        myPerson.style.height = "5vh";
+        myPerson.src = 'https://www.svgrepo.com/show/14756/person-silhouette.svg';
+
+        // const myVenue = document.createElement('img');
+        // // myVenue.classList.add("svgPerson");
+        // myVenue.id = "svgVenue";
+        // myVenue.style.height = "5vh";
+        // myVenue.src = 'https://www.svgrepo.com/show/14756/person-silhouette.svg';
+
+       
+
+        let myVenueList = [];
+        for (let i=0; i<venuesLatLng.length; i++) {
+          const myVenue = document.createElement('div');
+          myVenue.innerHTML = '<i class="fa fa-pizza-slice fa-lg"></i>';
+          const faPin = new PinElement({
+              scale: 1
+          });
+          myVenueList.push(faPin)
+        }
+
         const marker = [];
         for (let i=0; i<venuesLatLng.length; i++) {
           console.log(venuesLatLng[i])
           marker.push(new AdvancedMarkerElement({
             map: map,
             position: venuesLatLng ? venuesLatLng[i] : results,
-            title: 'Venue'
+            title: 'Venue',
+            content: (venuesLatLng.length - 1) == i ? myPerson : myVenueList[i].element
           }));
         }
-        console.log(marker)
-        
       }
+
       initMap(this.mapEl.nativeElement, this.latLng, venuesLatLng);
       this.openMap.latLng = results;
+
       })
     }
     
