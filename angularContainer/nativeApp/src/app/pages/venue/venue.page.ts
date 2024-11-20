@@ -13,6 +13,7 @@ import { UiUxService } from 'src/app/services/UiUx.service';
 import { CookieService } from 'ngx-cookie-service';
 import { IsSaved } from 'src/app/services/isSaved.service';
 import { Platform } from '@ionic/angular/standalone';
+import { NavHome } from 'src/app/services/navHome.service';
 
 @Component({
   selector: 'app-venue',
@@ -26,12 +27,19 @@ export class VenuePage implements OnInit {
   private FindEvents = inject(FindEvents);
   private EventsDetails = inject(EventDetailsService);
   private UiUxService = inject(UiUxService);
+  private Navhome = inject(NavHome);
   eventsList: any;
   eventDetails: any;
   venueId: any;
   eventId: any;
   activatedBtn: any;
   isToastOpen = false;
+  eventName: String;
+  eventImages: String;
+  eventStartDate: String;
+  eventStartTime: String;
+  eventTickets: String;
+  userId: String;
   
   constructor(private route: ActivatedRoute, private router: Router,  private cookieService: CookieService, public isSaved: IsSaved, public platform: Platform) { }
 
@@ -48,6 +56,7 @@ export class VenuePage implements OnInit {
 
     this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
       console.log(results);
+      this.userId = results.userId;
       this.EventsDetails.getSavedEvents({ "myCookie": results.userId }).subscribe((results: any) => {
         console.log(results)
         for (let i = 0; i < results.length; i++) {
@@ -100,9 +109,25 @@ export class VenuePage implements OnInit {
       // console.log(this.activatedBtn)
       this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
         console.log(results);
-        this.EventsDetails.saveEvent({"eventId": eventId, "userId": results.userId, "venueId": this.venueId}).subscribe((results: any) => {
-          console.log(results)
-          // this.eventDetails = results
+        this.EventsDetails.getEventDetails({"eventId": eventId}).subscribe((results: any) => {
+          console.log(results);
+          this.eventDetails = results.venueEvents[0];
+          console.log(this.eventDetails);
+          console.log("************************")
+          this.eventName = this.eventDetails.name;
+          this.eventImages = this.eventDetails.images[0].url;
+          this.eventTickets = this.eventDetails.url;
+          this.eventId = this.eventDetails.id;
+          this.venueId = this.eventDetails._embedded.venues[0].id;
+          this.eventStartDate = this.formatDate(this.eventDetails.dates.start.localDate).toString().replace(/(^|-)0+/g, "$1");
+          console.log(this.eventDetails.dates.start.localTime.slice(0, 5).toString())
+          this.eventStartTime = this.convertTo12Hour(this.eventDetails.dates.start.localTime.slice(0, 5).toString());
+          console.log(this.eventStartTime)
+          this.EventsDetails.saveEvent({"eventId": eventId, "userId": this.userId, "venueId": this.venueId, "eventName": this.eventName, "eventImage": this.eventImages, "eventStartDt": this.eventStartDate, "eventStartTm": this.eventStartTime, "eventTickets": this.eventTickets}).subscribe((results: any) => {
+            console.log(results)
+            // {"eventId": eventId, "userId": results.userId, "venueId": this.venueId, "eventName": this.eventName, "eventImage": this.eventImages, "eventStartDt": this.eventStartDate, "eventStartTm": this.eventStartTime, "eventTickets": this.eventTickets}
+            // this.eventDetails = results
+          });
         });
       });
       this.setOpen(true);
@@ -114,6 +139,30 @@ export class VenuePage implements OnInit {
 
   setOpen(isOpen: boolean) {
     this.isToastOpen = isOpen;
+  }
+
+  formatDate(dateString: any) {
+    const [year, month, day] = dateString.split('-');
+    return `${month}/${day}/${year}`;
+  }
+
+  convertTo12Hour(time24: any) {
+    let [hours, minutes] = time24.split(':');
+    console.log(hours, minutes)
+    let period = 'AM';
+  
+    if (hours >= 12) {
+      period = 'PM';
+      if (hours > 12) {
+        hours -= 12;
+      }
+    }
+  
+    return `${hours}:${minutes} ${period}`;
+  }
+
+  clickedVenueBackBtn() {
+    this.Navhome.navHome = true;
   }
 
 }

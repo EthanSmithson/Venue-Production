@@ -41,23 +41,23 @@
             <div>Start Time: {{eventStartTime}}</div>
           </ion-card-content>
         </ion-card>
-        <div>
-          <ion-button (click)="redirectToTickets(eventTickets)" style="position: fixed;
-          left: 0;
-          bottom: 10px;
-          right: 0;
-          width: 86vw;" class="ion-padding" shape="round" color="success" position="bottom" expand="full">
-            Get Tickets
-          </ion-button>
-          <ion-button (click)="isEventSaved(eventId)" style="position: fixed;
-          left: 85vw;
-          bottom: 28px;
-          right: 0;
-          width: 11vw;
-          height: 4.8vh;" color="success">
-            <ion-icon [ngStyle]="{'color': isSaved.isSaved ? 'white' : 'black'}" slot="icon-only" name="heart"></ion-icon>
-          </ion-button>
-        </div>
+        <ion-grid style="position: fixed;
+                      left: 0;
+                      bottom: -5px;
+                      right: 0;">
+          <ion-row>
+            <ion-col size="9.3">
+              <ion-button (click)="redirectToTickets(eventTickets)" class="ion-padding" shape="round" color="success" position="bottom" expand="full">
+              Get Tickets
+              </ion-button>
+            </ion-col>
+            <ion-col size="2.7">
+              <ion-button (click)="isEventSaved(eventId)" class="ion-padding" color="success" position="bottom">
+              <ion-icon [ngStyle]="{'color': isSaved.isSaved ? 'white' : 'black'}" slot="icon-only" name="heart"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
       <ion-toast
       [isOpen]="isToastOpen"

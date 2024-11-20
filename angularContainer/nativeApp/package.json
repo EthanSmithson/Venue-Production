@@ -29,7 +29,7 @@
     "geo-hash": "^0.0.2",
     "geofire-common": "^6.0.0",
     "intl-tel-input": "^24.5.0",
-    "ionic": "^4.1.2",
+    "ionic": "^4.12.0",
     "ionicons": "^7.4.0",
     "latlon-geohash": "^2.0.0",
     "ngeohash": "^0.6.3",

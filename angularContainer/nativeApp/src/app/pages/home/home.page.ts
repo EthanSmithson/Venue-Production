@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg} from '@ionic/angular/standalone';
-import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, exit } from 'ionicons/icons';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert} from '@ionic/angular/standalone';
+import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PackageCreationForm } from './form/packageCreation.page.form';
@@ -20,19 +20,23 @@ import { ActivatedRoute } from '@angular/router';
 import { OpenMap } from 'src/app/services/openMap.service';
 import { Output, EventEmitter } from '@angular/core';
 import { Loader } from '@googlemaps/js-api-loader';
+import { MySavedEvents } from 'src/app/services/mySavedEvents.service';
+import { EventDetailsService } from 'src/app/services/eventDetails.service';
+import { NavHome } from 'src/app/services/navHome.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert]
 })
 export class HomePage implements OnInit {
 
   form: any = FormGroup;
   presentingElement: any = null;
   latLng: any;
+  savedEvents: any;
   // openMap: boolean;
   @ViewChild('mapTab') mapTab!: ElementRef;
   @ViewChild('homeTab') homeTab!: ElementRef;
@@ -40,14 +44,29 @@ export class HomePage implements OnInit {
   homeTabBtn: any;
   @ViewChild('mapEl') mapEl!: ElementRef;
   @ViewChild('svgPerson') svgPerson!: ElementRef;
+  @ViewChild('openModal') openModal!: ElementRef;
+  eventModal: any;
+  isModalOpen = false;
+  eventDetails: any
+  eventName: String;
+  eventImages: String;
+  eventStartDate: String;
+  eventStartTime: String;
+  eventTickets: String;
+  eventId: number;
+  LatLng: any;
+  // isSaved: number;
+  venueId: any;
+  
   
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
 
   ngOnInit() {
-    addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline })
+    addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline })
 
     this.form = new PackageCreationForm(this.formBuilder).createForm();
     console.log(this.form);
+    this.eventModal = document.querySelector('.eventPage');
 
     this.TicketMasterApiService.getCurrentLocation().then(results => {
       console.log(results);
@@ -81,41 +100,62 @@ export class HomePage implements OnInit {
       // this.latLng = 
     }
 
+    this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+      console.log(results);
+      this.MySavedEvents.getSavedEvents({ "userId": results.userId }).subscribe((results: any) => {
+        this.savedEvents = results;
+        console.log(this.savedEvents)
+      });
+    });
+
   }
 
   ionViewWillEnter() {
      if (this.openMap.isOpenMap) {
         this.openMapTab();
       }
+
+      if (this.navHome.navHome) {
+        this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+          console.log(results);
+          this.MySavedEvents.getMySavedEvents({"userId": results.userId}).subscribe((results) => {
+            this.savedEvents = results;
+          });
+        });
+        this.navHome.navHome = false;
+      }
   }
 
-  canDismiss = async () => {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Are you sure?',
-      buttons: [
-        {
-          text: 'Yes',
-          role: 'confirm',
-        },
-        {
-          text: 'No',
-          role: 'cancel',
-        },
-      ],
-    });
+  // canDismiss = async () => {
+  //   const actionSheet = await this.actionSheetCtrl.create({
+  //     header: 'Are you sure?',
+  //     buttons: [
+  //       {
+  //         text: 'Yes',
+  //         role: 'confirm',
+  //       },
+  //       {
+  //         text: 'No',
+  //         role: 'cancel',
+  //       },
+  //     ],
+  //   });
 
-    actionSheet.present();
+  //   actionSheet.present();
 
-    const { role } = await actionSheet.onWillDismiss();
+  //   const { role } = await actionSheet.onWillDismiss();
 
-    return role === 'confirm';
-  };
+  //   return role === 'confirm';
+  // };
 
   @ViewChild("removeLabelInUseError") thisLabelError: any = ElementRef;
 
   private FindEvents = inject(FindEvents);
   private TicketMasterApiService = inject(TicketMasterApiService);
   private UiUxService = inject(UiUxService);
+  private MySavedEvents = inject(MySavedEvents);
+  private EventsDetails = inject(EventDetailsService);
+  private navHome = inject(NavHome);
   userId: any;
   labelInUseError: any;
   labelCreatedAlert: any;
@@ -348,7 +388,7 @@ export class HomePage implements OnInit {
         // myPerson.classList.add("svgPerson");
         myPerson.id = "svgPerson";
         myPerson.style.height = "5vh";
-        myPerson.src = 'https://www.svgrepo.com/show/14756/person-silhouette.svg';
+        myPerson.src = 'https://www.svgrepo.com/show/451178/person.svg';
 
         // const myVenue = document.createElement('img');
         // // myVenue.classList.add("svgPerson");
@@ -385,5 +425,107 @@ export class HomePage implements OnInit {
 
       })
     }
+
+    openSavedEvent(data: any) {
+      console.log(data)
+      this.isModalOpen = true;
+      this.EventsDetails.getEventDetails({"eventId": data.eventId}).subscribe((results: any) => {
+        console.log(results);
+        this.eventDetails = results.venueEvents[0];
+        console.log(this.eventDetails);
+        this.eventName = this.eventDetails.name;
+        this.eventImages = this.eventDetails.seatmap.staticUrl;
+        this.eventTickets = this.eventDetails.url;
+        this.eventId = this.eventDetails.id;
+        this.venueId = this.eventDetails._embedded.venues[0].id;
+        this.eventStartDate = this.formatDate(this.eventDetails.dates.start.localDate).toString().replace(/(^|-)0+/g, "$1");
+        this.eventStartTime = this.convertTo12Hour(this.eventDetails.dates.start.localTime.slice(0, 5).toString());
+        this.LatLng = { "lat": Number(this.eventDetails._embedded.venues[0].location.latitude), "lng" : Number(this.eventDetails._embedded.venues[0].location.longitude) }
+      });
+
+    }
     
+    async canDismiss(data?: any, role?: string) {
+      return role !== 'gesture';
+    }
+
+    closeModal() {
+      this.isModalOpen = false;
+    }
+
+    formatDate(dateString: any) {
+      const [year, month, day] = dateString.split('-');
+      return `${month}/${day}/${year}`;
+    }
+  
+    convertTo12Hour(time24: any) {
+      let [hours, minutes] = time24.split(':');
+      console.log(hours, minutes)
+      let period = 'AM';
+    
+      if (hours >= 12) {
+        period = 'PM';
+        if (hours > 12) {
+          hours -= 12;
+        }
+      }
+    
+      return `${hours}:${minutes} ${period}`;
+    }
+
+    isEventSaved(eventId: number) {
+      console.log(eventId)
+    }
+  
+    redirectToTickets(redirectLink: any) {
+      console.log(redirectLink)
+      window.location.href = redirectLink;
+    }
+
+    deleteThisEvent(eventId: any) {
+      console.log(eventId)
+      this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+        console.log(results);
+        this.EventsDetails.removeEvent({"eventId": eventId, "userId": results.userId, "venueId": this.venueId}).subscribe((results: any) => {
+          console.log(results)
+          this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+            console.log(results);
+            this.MySavedEvents.getSavedEvents({ "userId": results.userId }).subscribe((results: any) => {
+              this.savedEvents = results;
+              console.log(this.savedEvents)
+            });
+          });
+        });
+      });
+      this.isModalOpen = false;
+    }
+
+    public alertButtons = [
+      {
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Alert canceled');
+        },
+      },
+      {
+        text: 'Delete',
+        role: 'confirm',
+        handler: () => {
+          console.log('Alert confirmed');
+        },
+      },
+    ];
+  
+    setResult(ev: any, eventId: number) {
+      console.log(`Dismissed with role: ${ev.detail.role}`);
+      if (ev.detail.role === "confirm") {
+        this.deleteThisEvent(eventId);
+      }
+    }
+
+    goToSettings(page: number) {
+      this.router.navigateByUrl('/settings');
+    }
+
   }

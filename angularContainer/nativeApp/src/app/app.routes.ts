@@ -30,4 +30,8 @@ export const routes: Routes = [
     path: 'event',
     loadComponent: () => import('./pages/event/event.page').then( m => m.EventPage)
   },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
+  },
 ];

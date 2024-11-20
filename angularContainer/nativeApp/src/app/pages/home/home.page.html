@@ -31,7 +31,7 @@
               font-style: regular; color: white; margin-left: -47vw;">Locations</h1>
               <ion-list>
                 @for (event of events; track events) {
-                  <ion-card class="ion-activatable ripple-parent" (click)="viewVenue(event.id)">
+                  <ion-card class="ion-activatable" (click)="viewVenue(event.id)">
                     <ion-ripple-effect></ion-ripple-effect>
                     <img style="opacity: 0.5;
                     left: 0;
@@ -101,40 +101,83 @@
         <div id="radio-page">
           <ion-header>
             <ion-toolbar>
-              <ion-title>Events</ion-title>
+              <ion-title>My Events</ion-title>
             </ion-toolbar>
           </ion-header>
           <ion-content>
-            <div class="flex-center-home">
-              <ion-list>
-                @for (package of packages; track packages) {
-                  <ion-item>
-                    <ion-card style="width: 93vw;">
-                      <ion-card-header>
-                        <ion-card-title style="font-size: x-large;  font-family: 'Libre Franklin', sans-serif;
-                        font-optical-sizing: auto;
-                        font-weight: 500;
-                        font-style: regular;">{{package.title}}</ion-card-title>
-                      </ion-card-header>
-                      <ion-card-content style="  font-family: 'Quicksand', sans-serif;
-                      font-optical-sizing: auto;
-                      font-weight: 400;
-                      font-style: regular;">
-                           Carrier: {{package.carrier}}
-                        <br>Tracking Number: {{package.trackingNumber}}
-                      </ion-card-content>
-                      <div class="ion-text-end ion-margin">
-                        <ion-button color="success" style="max-width: fit-content;" size="small">Edit</ion-button><ion-button (click)="removeThisPackage(package.trackingNumber)" color="success" style="max-width: fit-content;" size="small">Delete</ion-button>                        
-                      </div>
-                    </ion-card>
-                  </ion-item>
-                }
-              </ion-list>
+            <div class="flex-center-home" #page>
+              <!-- <ion-list [inset]="true"> -->
+                <ion-grid class="eventGrid">
+                  <ion-row>
+                    <ion-col *ngFor="let event of savedEvents" size="6" size-md="4" size-lg="2">
+                      <ion-card #openModal id="open-modal" (click)="openSavedEvent(event)" class="ion-activatable {{event.eventId}}" style="height: 100%; width: 100%;">
+                        <ion-ripple-effect></ion-ripple-effect>
+                        <img style="opacity: 0.5;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: auto; background-position:50% 50%;" alt="Event Image" src="{{event.eventImage}}" />
+                        <ion-card-header>
+                          <ion-card-title style="font-size: medium;">{{event.eventName}}</ion-card-title>
+                        </ion-card-header>
+                        <!-- <ion-card-content> Card Content </ion-card-content> -->
+                      </ion-card>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+                <!-- <ion-modal #modal [isOpen]="isModalOpen" [presentingElement]="presentingElement">
+                  <ng-template>
+                    <ion-header>
+                      <ion-toolbar>
+                        <ion-title>Modal</ion-title>
+                        <ion-buttons slot="end">
+                          <ion-button (click)="closeModal()">Close</ion-button>
+                        </ion-buttons>
+                      </ion-toolbar>
+                    </ion-header>
+                    <ion-content>
+                    </ion-content>
+                  </ng-template>
+                </ion-modal> -->
+                <ion-modal #modal [isOpen]="isModalOpen" [canDismiss]="canDismiss" [presentingElement]="page">
+                  <ng-template>
+                    <ion-header>
+                      <ion-toolbar>
+                        <ion-title>{{this.eventName}}</ion-title>
+                        <ion-buttons slot="end">
+                          <ion-button color="success" (click)="closeModal()">Close</ion-button>
+                        </ion-buttons>
+                      </ion-toolbar>
+                    </ion-header>
+                    <ion-content class="ion-padding">
+                      <ion-img class="ion-padding" src="{{eventImages}}"></ion-img>
+                      <ion-grid style="position: fixed;
+                      left: 0;
+                      bottom: 10px;
+                      right: 0;">
+                        <ion-row>
+                          <ion-col size="6">
+                            <ion-button id="present-alert" class="ion-padding" shape="round" color="danger" position="bottom" expand="block"><ion-icon name="trash-outline"></ion-icon></ion-button>
+                          </ion-col>
+                          <ion-col size="6">
+                            <ion-button (click)="redirectToTickets(eventTickets)" class="ion-padding" shape="round" color="success" position="bottom" expand="block">Get Tickets</ion-button>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+                      <ion-alert
+                      trigger="present-alert"
+                      header="Alert!"
+                      [buttons]="alertButtons"
+                      (didDismiss)="setResult($event, eventId)"></ion-alert>
+                    </ion-content>
+                  </ng-template>
+                </ion-modal>
+              <div style="height: 20vh; width: 100%; background-color: transparent;"></div>
             </div>
           </ion-content>
           <ion-fab slot="fixed" vertical="bottom" horizontal="end">
             <ion-fab-button class="ion-margin" color="success">
-              <ion-icon name="add"></ion-icon>
+              <ion-icon name="search-outline"></ion-icon>
             </ion-fab-button>
             <ion-fab-list side="top">
               <form [formGroup]="form" (ngSubmit)="submitPackage(form.value)">
@@ -177,10 +220,10 @@
               <ion-list style="width: 85%; margin-top: 5vh;" [inset]="true">
                 <ion-item id="open-modal" (click)="openProfModal()" [button]="true">
                   <ion-icon color="danger" slot="start" name="list-circle" size="large"></ion-icon>
-                  <ion-label>Profile</ion-label>
+                  <ion-label (click)="goToSettings(1)">Profile</ion-label>
                   <!-- <ion-note slot="end">6</ion-note> -->
                 </ion-item>
-                <ion-modal #modal trigger="open-modal" [canDismiss]="canDismiss" [presentingElement]="presentingElement">
+                <!-- <ion-modal #modal trigger="open-modal" [canDismiss]="canDismiss" [presentingElement]="presentingElement">
                   <ng-template>
                     <ion-header>
                       <ion-toolbar>
@@ -194,7 +237,7 @@
                       <p>You will be prompted when closing this modal.</p>
                     </ion-content>
                   </ng-template>
-                </ion-modal>
+                </ion-modal> -->
                 <ion-item [button]="true">
                   <ion-icon color="tertiary" slot="start" name="list-circle" size="large"></ion-icon>
                   <ion-label>Display</ion-label>

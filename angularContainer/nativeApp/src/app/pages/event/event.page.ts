@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule, HashLocationStrategy } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonBackButton, IonHeader, IonTitle, IonToolbar, IonButtons, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, IonToast, IonRippleEffect } from '@ionic/angular/standalone';
+import { IonContent, IonBackButton, IonHeader, IonTitle, IonToolbar, IonButtons, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, IonToast, IonRippleEffect, IonRow, IonCol, IonGrid } from '@ionic/angular/standalone';
 import { EventDetailsService } from 'src/app/services/eventDetails.service';
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +21,7 @@ import { OpenMap } from 'src/app/services/openMap.service';
   templateUrl: './event.page.html',
   styleUrls: ['./event.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, GoogleMapsModule, IonToast, IonRippleEffect ]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, GoogleMapsModule, IonToast, IonRippleEffect, IonRow, IonCol, IonGrid ]
 })
 export class EventPage implements AfterViewInit {
 
@@ -203,7 +203,7 @@ export class EventPage implements AfterViewInit {
             this.isSaved.isSaved = 0;
           });
         } else {
-          this.EventsDetails.saveEvent({"eventId": eventId, "userId": this.userId, "venueId": this.venueId}).subscribe((results: any) => {
+          this.EventsDetails.saveEvent({"eventId": eventId, "userId": this.userId, "venueId": this.venueId, "eventName": this.eventName, "eventImage": this.eventImages, "eventStartDt": this.eventStartDate, "eventStartTm": this.eventStartTime, "eventTickets": this.eventTickets}).subscribe((results: any) => {
             console.log(results)
             this.isSaved.isSaved = 1;
           });

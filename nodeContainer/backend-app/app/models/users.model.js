@@ -192,7 +192,8 @@ Users.getEvents = (data, result) => {
 };
 
 Users.saveEvent = (data, result) => {
-  sql.query(`INSERT INTO SavedEvents (eventId, userId, venueId) VALUES ('${data.eventId}', ${data.userId}, '${data.venueId}')`, (err, res) => {
+  console.log(data)
+  sql.query(`INSERT INTO SavedEvents (eventId, userId, venueId, eventName, eventImage, eventStartDt, eventStartTm) VALUES ('${data.eventId}', ${data.userId}, '${data.venueId}', "${data.eventName}", '${data.eventImage}', '${data.eventStartDt}', '${data.eventStartTm}')`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -232,6 +233,19 @@ Users.getSavedEvents = (data, result) => {
 
 Users.getSavedEvent = (data, result) => {
   sql.query(`SELECT COUNT(*) AS isSaved FROM SavedEvents WHERE userId = ${data.userId} AND eventId = '${data.eventId}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
+Users.getMySavedEvents = (data, result) => {
+  sql.query(`SELECT * FROM SavedEvents WHERE userId = ${data.userId}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
