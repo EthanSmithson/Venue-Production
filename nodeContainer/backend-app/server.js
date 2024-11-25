@@ -44,7 +44,7 @@ app.post('/confirmEmail', urlEncodedParser, async (req, res) => {
   const email = req.body.email;
 
   if (email) {
-      const data = await ejs.renderFile("/workspaces/ShipIt/nodeContainer/backend-app/views/confirmEmailTemplate.ejs", { email });
+      const data = await ejs.renderFile("/workspaces/Venue/nodeContainer/backend-app/views/confirmEmailTemplate.ejs", { email });
       
       const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
@@ -60,11 +60,11 @@ app.post('/confirmEmail', urlEncodedParser, async (req, res) => {
         async function main() {
           // send mail with defined transport object
           const info = await transporter.sendMail({
-            from: '"Ship It!" <shipit.email>', // sender address
+            from: '"Venue!" <venue.email>', // sender address
             to: email, // list of receivers
             subject: "Confirm Your Email!", // Subject line
             html: data
-            // res.render('/workspaces/ethan/Desktop/Ethan/ShipIt/nodeContainer/backend-app/views/confirmEmailTemplate.ejs', {
+            // res.render('/workspaces/ethan/Desktop/Ethan/Venue/nodeContainer/backend-app/views/confirmEmailTemplate.ejs', {
             //   email
             // })
             // await readFile('emailTemplates/confirmEmailTemplate.html', 'utf8') // html body
@@ -85,7 +85,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
     const email = req.body.email;
 
     if (req.body.email) {
-        const data = await ejs.renderFile("/workspaces/ShipIt/nodeContainer/backend-app/views/resetEmail.ejs", { email });
+        const data = await ejs.renderFile("/workspaces/Venue/nodeContainer/backend-app/views/resetEmail.ejs", { email });
 
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -101,7 +101,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
           async function main() {
             // send mail with defined transport object
             const info = await transporter.sendMail({
-              from: '"Ship It!" <shipit.email>', // sender address
+              from: '"Venue!" <venue.email>', // sender address
               to: req.body.email, // list of receivers
               subject: "Reset Your Password!", // Subject line
               text: "Test", // plain text body
@@ -120,7 +120,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
 });
 
 app.get('/confirmed', (req, res) => {
-  res.sendFile( __dirname + '/workspaces/ShipIt/nodeContainer/backend-app/emailTemplates/confirmedEmailMessage.html');
+  res.sendFile( __dirname + '/workspaces/Venue/nodeContainer/backend-app/emailTemplates/confirmedEmailMessage.html');
 });
 
 app.get('/resetMyPassword', (req, res) => {

@@ -11,9 +11,9 @@
 // };
 
 module.exports = {
-  HOST: "192.168.1.110",
+  HOST: "192.168.1.111",
   USER: "root",
   PASSWORD: "password",
-  DB: "ShipIt",
+  DB: "Venue",
   port: "3306",
 };
