@@ -53,6 +53,8 @@ module.exports = app => {
     router.get("/getSavedEvent/:userId/:eventId", users.getSavedEvent);
     
     router.get("/getMySavedEvents/:userId", users.getMySavedEvents);
+
+    router.get("/searchForEvents/:searchKey", users.searchForEvents);
   
     app.use('/api/users', router);
   };

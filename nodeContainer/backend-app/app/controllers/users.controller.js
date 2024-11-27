@@ -483,3 +483,19 @@ exports.getMySavedEvents = (req, res) => {
     } else res.json( data );
   });
 }
+
+exports.searchForEvents = (req, res) => {
+  http.get(`https://app.ticketmaster.com/discovery/v2/events.json?apikey=AQnz8QPEolgr7ZyJ3W1qxNLwh46uf1GK&keyword=${req.params.searchKey}&radius=200&segmentId=KZFzniwnSyZfZ7v7nJ`, resp => {
+    let data = ''
+    resp.on('data', chunk => {
+        data += chunk
+    })
+    resp.on('end', () => {
+        let eventData = JSON.parse(data)
+        return res.json({"eventSearch": eventData});
+    })
+})
+.on('error', err => {
+    console.log("Error: ", err.message)
+})
+}

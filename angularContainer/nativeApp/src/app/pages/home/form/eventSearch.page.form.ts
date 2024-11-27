@@ -14,7 +14,7 @@ export class PackageCreationForm {
     createForm(): FormGroup {
         return this.formBuilder.group({
             title: ['', [Validators.required]],
-            trackingNumber: ['', Validators.required]
+            genre: ['', Validators.required]
         },
         );
     }

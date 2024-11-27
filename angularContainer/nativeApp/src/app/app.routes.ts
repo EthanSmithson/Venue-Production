@@ -34,4 +34,8 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
   },
+  {
+    path: 'countdown',
+    loadComponent: () => import('./pages/countdown/countdown.page').then( m => m.CountdownPage)
+  },
 ];

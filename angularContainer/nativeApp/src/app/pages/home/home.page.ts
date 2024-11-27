@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar} from '@ionic/angular/standalone';
 import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { PackageCreationForm } from './form/packageCreation.page.form';
+import { PackageCreationForm } from './form/eventSearch.page.form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { FindEvents } from 'src/app/services/findEvents.service';
@@ -23,13 +23,15 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { MySavedEvents } from 'src/app/services/mySavedEvents.service';
 import { EventDetailsService } from 'src/app/services/eventDetails.service';
 import { NavHome } from 'src/app/services/navHome.service';
+import { CountdownPage } from '../countdown/countdown.page';
+import { CountdownDateService } from 'src/app/services/countdown-date.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert]
+  imports: [CountdownPage, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar]
 })
 export class HomePage implements OnInit {
 
@@ -45,6 +47,7 @@ export class HomePage implements OnInit {
   @ViewChild('mapEl') mapEl!: ElementRef;
   @ViewChild('svgPerson') svgPerson!: ElementRef;
   @ViewChild('openModal') openModal!: ElementRef;
+  @ViewChild('searchbar') searchbar!: ElementRef;
   eventModal: any;
   isModalOpen = false;
   eventDetails: any
@@ -57,6 +60,8 @@ export class HomePage implements OnInit {
   LatLng: any;
   // isSaved: number;
   venueId: any;
+  seatMap: any;
+  searchResults: any;
   
   
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
@@ -100,13 +105,7 @@ export class HomePage implements OnInit {
       // this.latLng = 
     }
 
-    this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
-      console.log(results);
-      this.MySavedEvents.getSavedEvents({ "userId": results.userId }).subscribe((results: any) => {
-        this.savedEvents = results;
-        console.log(this.savedEvents)
-      });
-    });
+   
 
   }
 
@@ -114,6 +113,14 @@ export class HomePage implements OnInit {
      if (this.openMap.isOpenMap) {
         this.openMapTab();
       }
+
+      this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+        console.log(results);
+        this.MySavedEvents.getSavedEvents({ "userId": results.userId }).subscribe((results: any) => {
+          this.savedEvents = results;
+          console.log(this.savedEvents)
+        });
+      });
 
       if (this.navHome.navHome) {
         this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
@@ -156,6 +163,7 @@ export class HomePage implements OnInit {
   private MySavedEvents = inject(MySavedEvents);
   private EventsDetails = inject(EventDetailsService);
   private navHome = inject(NavHome);
+  private CountdownDate = inject(CountdownDateService);
   userId: any;
   labelInUseError: any;
   labelCreatedAlert: any;
@@ -434,12 +442,14 @@ export class HomePage implements OnInit {
         this.eventDetails = results.venueEvents[0];
         console.log(this.eventDetails);
         this.eventName = this.eventDetails.name;
-        this.eventImages = this.eventDetails.seatmap.staticUrl;
+        this.eventImages = this.eventDetails.images[0].url;
+        this.seatMap = this.eventDetails.seatmap.staticUrl;
         this.eventTickets = this.eventDetails.url;
         this.eventId = this.eventDetails.id;
         this.venueId = this.eventDetails._embedded.venues[0].id;
         this.eventStartDate = this.formatDate(this.eventDetails.dates.start.localDate).toString().replace(/(^|-)0+/g, "$1");
         this.eventStartTime = this.convertTo12Hour(this.eventDetails.dates.start.localTime.slice(0, 5).toString());
+        this.CountdownDate.eventDate = this.eventDetails.dates.start.localDate;
         this.LatLng = { "lat": Number(this.eventDetails._embedded.venues[0].location.latitude), "lng" : Number(this.eventDetails._embedded.venues[0].location.longitude) }
       });
 
@@ -526,6 +536,24 @@ export class HomePage implements OnInit {
 
     goToSettings(page: number) {
       this.router.navigateByUrl('/settings');
+    }
+
+    searchKeyUp(event: any) {
+      let searchKey = event.target.value;
+      console.log(this.searchbar)
+      if (searchKey == "") {
+        this.searchResults = null
+      } else {
+        this.EventsDetails.searchForEvent({"searchKey": searchKey }).subscribe((results: any) => {
+          console.log(results);
+          this.searchResults = results.eventSearch._embedded.events
+          console.log(this.searchResults)
+        });
+      }
+    }
+
+    clearSearchedItems() {
+      this.searchResults = null;
     }
 
   }

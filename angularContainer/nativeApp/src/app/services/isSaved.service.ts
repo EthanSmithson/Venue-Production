@@ -8,8 +8,6 @@ import { Observable } from 'rxjs';
 })
 export class IsSaved {
 
-    baseUrl: string = "http://localhost:8080/";
-
     constructor(private http: HttpClient) { }
 
     isSaved: number;

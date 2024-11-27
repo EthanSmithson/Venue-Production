@@ -59,4 +59,13 @@ export class EventDetailsService {
         );
     }
 
+    searchForEvent(data: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        // const formDataJson = JSON.stringify(formData);
+        console.log(data)
+        return this.http.get<any>(
+            this.baseUrl + `/api/users/searchForEvents/${data.searchKey}`, {headers: headers}
+        );
+    }
+
 }
