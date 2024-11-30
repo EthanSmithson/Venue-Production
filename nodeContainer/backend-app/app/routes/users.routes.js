@@ -55,6 +55,8 @@ module.exports = app => {
     router.get("/getMySavedEvents/:userId", users.getMySavedEvents);
 
     router.get("/searchForEvents/:searchKey", users.searchForEvents);
+
+    router.get("/getProfileData/:searchKey", users.getProfileData);
   
     app.use('/api/users', router);
   };

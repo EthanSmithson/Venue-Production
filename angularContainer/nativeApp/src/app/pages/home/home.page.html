@@ -32,7 +32,10 @@
               <ion-searchbar #searchbar (ionClear)="clearSearchedItems()" (keyup)="searchKeyUp($event)" animated="true" placeholder="Search Events"></ion-searchbar>
               <ion-list style="position: absolute; width: 93%; z-index: 100; top: 12.5%; opacity: 92%;" [inset]="true">
                 @for (event of searchResults; track searchResults) {
-                  <ion-item>{{event.name}}</ion-item>
+                  <ion-item (click)="clickedSearchEvent(event)">
+                    <div style="width: fit-content;">{{event.name}}</div>
+                    <div>{{event._embedded.venues[0].name}}</div>
+                  </ion-item>
                 }
                 <!-- <ion-item>
                   <ion-label>Pokémon Yellow</ion-label>
@@ -112,6 +115,12 @@
           <ion-content>
             <div class="example-content">
               <div #mapEl id="mapEl" class="map"></div>
+              <ion-alert
+              trigger="mapAlert"
+              header="Alert!"
+              [buttons]="alertButtons"
+              (didDismiss)="setResultMap($event)"
+            ></ion-alert>
             </div>
           </ion-content>
         </div>

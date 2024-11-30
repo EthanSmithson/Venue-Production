@@ -257,4 +257,17 @@ Users.getMySavedEvents = (data, result) => {
   });
 };
 
+Users.getProfileData = (data, result) => {
+  sql.query(`SELECT * FROM Users WHERE userId = ${data.searchKey}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
 module.exports = Users;

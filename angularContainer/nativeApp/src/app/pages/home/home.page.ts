@@ -62,6 +62,7 @@ export class HomePage implements OnInit {
   venueId: any;
   seatMap: any;
   searchResults: any;
+  mapAlert: boolean;
   
   
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
@@ -426,12 +427,24 @@ export class HomePage implements OnInit {
             content: (venuesLatLng.length - 1) == i ? myPerson : myVenueList[i].element
           }));
         }
+        for (var i=0; i<marker.length; i++) {
+          console.log(marker[i].position)
+          let markerPos: any = {}
+          console.log(markerPos)
+          markerPos.lat = marker[i].position?.lat
+          markerPos.lng = marker[i].position?.lng
+          marker[i].addListener("click", function() {
+            console.log(markerPos)
+            // this.mapAlert = true;
+          })
+        }
       }
 
       initMap(this.mapEl.nativeElement, this.latLng, venuesLatLng);
       this.openMap.latLng = results;
 
       })
+      
     }
 
     openSavedEvent(data: any) {
@@ -534,6 +547,10 @@ export class HomePage implements OnInit {
       }
     }
 
+    setResultMap(ev: any) {
+      this.mapAlert = true;
+    }
+
     goToSettings(page: number) {
       this.router.navigateByUrl('/settings');
     }
@@ -546,6 +563,20 @@ export class HomePage implements OnInit {
       } else {
         this.EventsDetails.searchForEvent({"searchKey": searchKey }).subscribe((results: any) => {
           console.log(results);
+          for (let i=0; i<results.eventSearch._embedded.events.length; i++) {
+            if (results.eventSearch._embedded.events[i].name.length > 24) {
+              let cleaningName = results.eventSearch._embedded.events[i].name.slice(0, 24) + "..."; 
+              results.eventSearch._embedded.events[i].name = cleaningName;
+            }
+          }
+
+          for (let i=0; i<results.eventSearch._embedded.events.length; i++) {
+            if (results.eventSearch._embedded.events[i]._embedded.venues[0].name.length > 15) {
+              let cleaningVenueName = results.eventSearch._embedded.events[i]._embedded.venues[0].name.slice(0, 15) + "..."; 
+              results.eventSearch._embedded.events[i]._embedded.venues[0].name = cleaningVenueName;
+            }
+          }
+
           this.searchResults = results.eventSearch._embedded.events
           console.log(this.searchResults)
         });
@@ -554,6 +585,10 @@ export class HomePage implements OnInit {
 
     clearSearchedItems() {
       this.searchResults = null;
+    }
+
+    clickedSearchEvent(event: any) {
+      this.router.navigate(['/event'], { queryParams: { eventId: event.id } });
     }
 
   }
