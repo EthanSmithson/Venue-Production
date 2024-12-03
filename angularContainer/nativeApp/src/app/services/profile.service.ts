@@ -23,4 +23,13 @@ export class ProfileService {
         ); 
     }
 
+    updateProfile(formData: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'}  
+        const formDataJson = JSON.stringify(formData);
+        console.log(formData)
+        return this.http.post<UserInfo>(
+            this.baseUrl + '/updateProfile', formDataJson, {headers: headers}
+        );
+    }
+
 }

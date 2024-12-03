@@ -516,3 +516,23 @@ exports.getProfileData = (req, res) => {
     } else res.json( data );
   });
 }
+
+exports.updateProfile = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  console.log(req.body)
+
+  Users.updateProfile((req.body), (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred."
+      });
+    else res.json({status: 1});
+  });
+}

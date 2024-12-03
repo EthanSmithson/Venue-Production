@@ -53,7 +53,7 @@
           <ion-label color="danger" class="errorLabel" *ngIf="form.errors?.mismatch && (form.controls['confirmPassword'].dirty) &&  !form.get('confirmPassword').errors?.required">Passwords don't match.</ion-label>
           <ion-button
           type="submit" 
-          color="success" 
+          color="success"
           [disabled]="!form.valid"
           size="full">
             Create Account

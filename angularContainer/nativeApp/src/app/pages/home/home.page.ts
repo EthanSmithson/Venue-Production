@@ -65,7 +65,7 @@ export class HomePage implements OnInit {
   mapAlert: boolean;
   
   
-  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, private router:Router, private route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
+  constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, public router:Router, public route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
 
   ngOnInit() {
     addIcons({ homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline })
@@ -73,6 +73,7 @@ export class HomePage implements OnInit {
     this.form = new PackageCreationForm(this.formBuilder).createForm();
     console.log(this.form);
     this.eventModal = document.querySelector('.eventPage');
+    this.searchResults = null
 
     this.TicketMasterApiService.getCurrentLocation().then(results => {
       console.log(results);
@@ -114,6 +115,7 @@ export class HomePage implements OnInit {
      if (this.openMap.isOpenMap) {
         this.openMapTab();
       }
+      this.searchResults = null
 
       this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
         console.log(results);
@@ -552,7 +554,7 @@ export class HomePage implements OnInit {
     }
 
     goToSettings(page: number) {
-      this.router.navigateByUrl('/settings');
+      this.router.navigate(['/settings'], { queryParams: { setting: page } });
     }
 
     searchKeyUp(event: any) {

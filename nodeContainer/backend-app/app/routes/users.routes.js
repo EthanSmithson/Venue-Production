@@ -57,6 +57,8 @@ module.exports = app => {
     router.get("/searchForEvents/:searchKey", users.searchForEvents);
 
     router.get("/getProfileData/:searchKey", users.getProfileData);
+
+    router.post("/updateProfile", users.updateProfile);
   
     app.use('/api/users', router);
   };

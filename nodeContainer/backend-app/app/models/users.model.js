@@ -270,4 +270,17 @@ Users.getProfileData = (data, result) => {
   });
 };
 
+Users.updateProfile = (data, result) => {
+  sql.query(`UPDATE Users SET firstName = '${data.data.firstName}', lastName = '${data.data.lastName}', phoneNumber = ${data.data.phoneNumber}, email = '${data.data.email}', password = '${data.data.password}' WHERE userId = ${data.data.userId}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
 module.exports = Users;
