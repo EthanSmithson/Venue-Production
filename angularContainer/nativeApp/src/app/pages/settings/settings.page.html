@@ -43,13 +43,14 @@
               <ion-label *ngIf="form.get('confirmPassword').touched && form.get('confirmPassword').errors?.required" class="errorLabel" color="danger">Please re-enter password</ion-label>
               <ion-label color="danger" class="errorLabel" *ngIf="form.errors?.mismatch && (form.controls['confirmPassword'].dirty) &&  !form.get('confirmPassword').errors?.required">Passwords don't match.</ion-label>
               <ion-button
-              [disabled]="!form.valid"
+              id="updateProf"
               class="ion-padding"
               type="submit" 
               color="success" 
               size="block">
                 Update Profile
               </ion-button>
+              <ion-toast trigger="updateProf" message="Profile Updated" color="success" style="color: white; text-align: center; font-size: large;" [duration]="5000"></ion-toast>
             </ion-list>
           </ion-card-content>
         </ion-card>

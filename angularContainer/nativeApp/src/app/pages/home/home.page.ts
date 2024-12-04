@@ -63,6 +63,7 @@ export class HomePage implements OnInit {
   seatMap: any;
   searchResults: any;
   mapAlert: boolean;
+  _this: this = this;
   
   
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, public router:Router, public route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
@@ -278,6 +279,7 @@ export class HomePage implements OnInit {
       venuesLatLng.push(this.events[i].location)
       venuesLatLng[i].lng = Number(venuesLatLng[i].longitude)
       venuesLatLng[i].lat = Number(venuesLatLng[i].latitude)
+      venuesLatLng[i].id = this.events[i].id
       delete venuesLatLng[i].latitude;
       delete venuesLatLng[i].longitude;
     }
@@ -290,7 +292,7 @@ export class HomePage implements OnInit {
       venuesLatLng.push(results);
 
       let map;
-      async function initMap(myMap: any, latLng: object, venuesLatLng: any): Promise<void> {
+      async function initMap(myMap: any, latLng: object, venuesLatLng: any, _this: any) {
 
         // Request needed libraries.
         const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
@@ -425,7 +427,7 @@ export class HomePage implements OnInit {
           marker.push(new AdvancedMarkerElement({
             map: map,
             position: venuesLatLng ? venuesLatLng[i] : results,
-            title: 'Venue',
+            title: venuesLatLng[i].id,
             content: (venuesLatLng.length - 1) == i ? myPerson : myVenueList[i].element
           }));
         }
@@ -435,14 +437,17 @@ export class HomePage implements OnInit {
           console.log(markerPos)
           markerPos.lat = marker[i].position?.lat
           markerPos.lng = marker[i].position?.lng
-          marker[i].addListener("click", function() {
+          markerPos.id = marker[i].title
+          // marker[i].addEventListener("click", _this.router.navigate(['/venue'], { queryParams: { venueId: markerPos.id } }))
+          marker[i].addListener("click", function(event: any) {
             console.log(markerPos)
+            _this.router.navigate(['/venue'], { queryParams: { venueId: markerPos.id } });
             // this.mapAlert = true;
           })
         }
       }
 
-      initMap(this.mapEl.nativeElement, this.latLng, venuesLatLng);
+      initMap(this.mapEl.nativeElement, this.latLng, venuesLatLng, this._this);
       this.openMap.latLng = results;
 
       })
