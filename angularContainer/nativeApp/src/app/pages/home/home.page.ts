@@ -25,13 +25,14 @@ import { EventDetailsService } from 'src/app/services/eventDetails.service';
 import { NavHome } from 'src/app/services/navHome.service';
 import { CountdownPage } from '../countdown/countdown.page';
 import { CountdownDateService } from 'src/app/services/countdown-date.service';
+import { ClickedOutsideDirective } from './directive/clicked-outside.directive';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [CountdownPage, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar]
+  imports: [CountdownPage, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar, ClickedOutsideDirective]
 })
 export class HomePage implements OnInit {
 
@@ -48,6 +49,10 @@ export class HomePage implements OnInit {
   @ViewChild('svgPerson') svgPerson!: ElementRef;
   @ViewChild('openModal') openModal!: ElementRef;
   @ViewChild('searchbar') searchbar!: ElementRef;
+  @ViewChild('searchbar') searchbarAlter!: any;
+  @ViewChild('searchbarV2') searchbarAlterV2!: any;
+  @ViewChild('searchbarItem') searchbarItem!: any;
+  @ViewChild('fabBtnV2') fabBtnV2!: any;
   eventModal: any;
   isModalOpen = false;
   eventDetails: any
@@ -62,6 +67,7 @@ export class HomePage implements OnInit {
   venueId: any;
   seatMap: any;
   searchResults: any;
+  searchResultsV2: any;
   mapAlert: boolean;
   _this: this = this;
   
@@ -75,6 +81,7 @@ export class HomePage implements OnInit {
     console.log(this.form);
     this.eventModal = document.querySelector('.eventPage');
     this.searchResults = null
+    this.searchResultsV2 = null
 
     this.TicketMasterApiService.getCurrentLocation().then(results => {
       console.log(results);
@@ -117,6 +124,7 @@ export class HomePage implements OnInit {
         this.openMapTab();
       }
       this.searchResults = null
+      this.searchResultsV2 = null
 
       this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
         console.log(results);
@@ -135,6 +143,10 @@ export class HomePage implements OnInit {
         });
         this.navHome.navHome = false;
       }
+      this.UiUxService.getMe({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+        console.log(results);
+        this.myName = results.firstName;
+      })
   }
 
   // canDismiss = async () => {
@@ -590,8 +602,54 @@ export class HomePage implements OnInit {
       }
     }
 
+    searchKeyUpV2(event: any) {
+      let searchKey = event.target.value;
+      console.log(this.searchbar)
+      if (searchKey == "") {
+        this.searchResultsV2 = null
+      } else {
+        this.EventsDetails.searchForEvent({"searchKey": searchKey }).subscribe((results: any) => {
+          console.log(results);
+          for (let i=0; i<results.eventSearch._embedded.events.length; i++) {
+            if (results.eventSearch._embedded.events[i].name.length > 24) {
+              let cleaningName = results.eventSearch._embedded.events[i].name.slice(0, 24) + "..."; 
+              results.eventSearch._embedded.events[i].name = cleaningName;
+            }
+          }
+
+          for (let i=0; i<results.eventSearch._embedded.events.length; i++) {
+            if (results.eventSearch._embedded.events[i]._embedded.venues[0].name.length > 15) {
+              let cleaningVenueName = results.eventSearch._embedded.events[i]._embedded.venues[0].name.slice(0, 15) + "..."; 
+              results.eventSearch._embedded.events[i]._embedded.venues[0].name = cleaningVenueName;
+            }
+          }
+
+          this.searchResultsV2 = results.eventSearch._embedded.events.slice(0, 11);
+          console.log(this.searchResults)
+        });
+      }
+    }
+
     clearSearchedItems() {
       this.searchResults = null;
+      this.searchResultsV2 = null
+      console.log(this.fabBtnV2)
+      console.log(this.searchbarAlter.el.children[0].children[2])
+      this.searchbarAlter.el.children[0].children[2].click()
+      this.searchbarAlterV2.el.children[0].children[2].click()
+      console.log(this.searchbarItem)
+    }
+
+    clearSearchedItemsCloseFab() {
+      this.searchResults = null;
+      this.searchResultsV2 = null;
+      this.fabBtnV2.el.fab.activated = false;
+      this.searchbarAlter.el.children[0].children[2].click()
+      this.searchbarAlterV2.el.children[0].children[2].click()
+    }
+
+    clickedOnhome(ev: any) {
+      console.log(ev)
     }
 
     clickedSearchEvent(event: any) {
