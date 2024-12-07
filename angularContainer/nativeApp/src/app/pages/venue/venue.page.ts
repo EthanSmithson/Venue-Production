@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButtons, IonBackButton, IonButton, IonIcon, IonMenu, IonMenuToggle, IonToast } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButtons, IonBackButton, IonButton, IonIcon, IonMenu, IonMenuToggle, IonToast, IonMenuButton } from '@ionic/angular/standalone';
 import { ActivatedRoute } from '@angular/router';
 import { FindEvents } from 'src/app/services/findEvents.service';
 import { inject } from '@angular/core';
@@ -20,7 +20,7 @@ import { NavHome } from 'src/app/services/navHome.service';
   templateUrl: './venue.page.html',
   styleUrls: ['./venue.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonItem, IonLabel, IonButtons, IonBackButton, IonButton, IonIcon, IonMenu, IonMenuToggle, IonToast]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonItem, IonLabel, IonButtons, IonBackButton, IonButton, IonIcon, IonMenu, IonMenuToggle, IonToast, IonMenuButton]
 })
 export class VenuePage implements OnInit {
 
@@ -40,14 +40,16 @@ export class VenuePage implements OnInit {
   eventStartTime: String;
   eventTickets: String;
   userId: String;
+  venueName: String;
   
   constructor(private route: ActivatedRoute, private router: Router,  private cookieService: CookieService, public isSaved: IsSaved, public platform: Platform) { }
 
   ngOnInit() {
-    addIcons({ heart })
-    this.activatedBtn = []
+    addIcons({ heart });
+    this.activatedBtn = [];
 
-    this.venueId = this.route.snapshot.queryParams['venueId']
+    this.venueId = this.route.snapshot.queryParams['venueId'];
+    this.venueName = this.route.snapshot.queryParams['venueName'] ? this.route.snapshot.queryParams['venueName'] : this.route.snapshot.queryParams['venueNameMap'] ;
 
     this.FindEvents.getVenuesEvents({"venueId": this.venueId}).subscribe((results: any) => {
       console.log(results)

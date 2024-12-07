@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule, HashLocationStrategy } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonBackButton, IonHeader, IonTitle, IonToolbar, IonButtons, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, IonToast, IonRippleEffect, IonRow, IonCol, IonGrid } from '@ionic/angular/standalone';
+import { IonContent, IonBackButton, IonHeader, IonTitle, IonToolbar, IonButtons, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, IonToast, IonRippleEffect, IonRow, IonCol, IonGrid, IonMenuButton } from '@ionic/angular/standalone';
 import { EventDetailsService } from 'src/app/services/eventDetails.service';
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +21,7 @@ import { OpenMap } from 'src/app/services/openMap.service';
   templateUrl: './event.page.html',
   styleUrls: ['./event.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, GoogleMapsModule, IonToast, IonRippleEffect, IonRow, IonCol, IonGrid ]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonImg, IonItem, IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonCardTitle, IonIcon, GoogleMapsModule, IonToast, IonRippleEffect, IonRow, IonCol, IonGrid, IonMenuButton ]
 })
 export class EventPage implements AfterViewInit {
 

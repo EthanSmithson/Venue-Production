@@ -14,7 +14,15 @@
     <ion-buttons (click)="clickedVenueBackBtn()" slot="start">
       <ion-back-button color="success"></ion-back-button>
     </ion-buttons>
-    <ion-title>Events</ion-title>
+    <div *ngIf="venueName; else templateName">
+      <ion-title>Events at {{venueName}}</ion-title>
+    </div>
+    <ng-template #templateName>
+      <ion-title>Events</ion-title>
+    </ng-template>
+    <ion-buttons style="margin-right: 10px;" slot="end">
+      <ion-menu-button color="success"></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
   <div class="flex-center" id="main-content">

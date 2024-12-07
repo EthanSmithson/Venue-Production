@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar, IonRefresher, IonRefresherContent, IonMenuButton} from '@ionic/angular/standalone';
 import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -26,13 +26,14 @@ import { NavHome } from 'src/app/services/navHome.service';
 import { CountdownPage } from '../countdown/countdown.page';
 import { CountdownDateService } from 'src/app/services/countdown-date.service';
 import { ClickedOutsideDirective } from './directive/clicked-outside.directive';
+import { FocusSearchbarDirective } from './directive/focus-searchbar.directive';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [CountdownPage, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar, ClickedOutsideDirective]
+  imports: [CountdownPage, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, ReactiveFormsModule, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar, ClickedOutsideDirective, FocusSearchbarDirective, IonRefresher, IonRefresherContent, IonMenuButton]
 })
 export class HomePage implements OnInit {
 
@@ -51,6 +52,7 @@ export class HomePage implements OnInit {
   @ViewChild('searchbar') searchbar!: ElementRef;
   @ViewChild('searchbar') searchbarAlter!: any;
   @ViewChild('searchbarV2') searchbarAlterV2!: any;
+  @ViewChild('searchbarV2') searchbarAlterV2Focus!: IonSearchbar;
   @ViewChild('searchbarItem') searchbarItem!: any;
   @ViewChild('fabBtnV2') fabBtnV2!: any;
   eventModal: any;
@@ -70,6 +72,7 @@ export class HomePage implements OnInit {
   searchResultsV2: any;
   mapAlert: boolean;
   _this: this = this;
+  filterTheseEvents: Array<any>;
   
   
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, public router:Router, public route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
@@ -82,6 +85,7 @@ export class HomePage implements OnInit {
     this.eventModal = document.querySelector('.eventPage');
     this.searchResults = null
     this.searchResultsV2 = null
+    this.filterTheseEvents = []
 
     this.TicketMasterApiService.getCurrentLocation().then(results => {
       console.log(results);
@@ -247,9 +251,9 @@ export class HomePage implements OnInit {
     
   }
 
-  viewVenue(data: any) {
+  viewVenue(venueId: any, venueName: string) {
     setTimeout(() => {
-      this.router.navigate(['/venue'], { queryParams: { venueId: data } });
+      this.router.navigate(['/venue'], { queryParams: { venueId: venueId, venueName: venueName } });
     }, 100);
     // this.FindEvents.getVenuesEvents({"venueId": data}).subscribe((results: any) => {
     //   console.log(results)
@@ -291,7 +295,8 @@ export class HomePage implements OnInit {
       venuesLatLng.push(this.events[i].location)
       venuesLatLng[i].lng = Number(venuesLatLng[i].longitude)
       venuesLatLng[i].lat = Number(venuesLatLng[i].latitude)
-      venuesLatLng[i].id = this.events[i].id
+      venuesLatLng[i].id = this.events[i].id;
+      venuesLatLng[i].name = this.events[i].name;
       delete venuesLatLng[i].latitude;
       delete venuesLatLng[i].longitude;
     }
@@ -410,18 +415,9 @@ export class HomePage implements OnInit {
         );
 
         const myPerson = document.createElement('img');
-        // myPerson.classList.add("svgPerson");
         myPerson.id = "svgPerson";
         myPerson.style.height = "5vh";
         myPerson.src = 'https://www.svgrepo.com/show/451178/person.svg';
-
-        // const myVenue = document.createElement('img');
-        // // myVenue.classList.add("svgPerson");
-        // myVenue.id = "svgVenue";
-        // myVenue.style.height = "5vh";
-        // myVenue.src = 'https://www.svgrepo.com/show/14756/person-silhouette.svg';
-
-       
 
         let myVenueList = [];
         for (let i=0; i<venuesLatLng.length; i++) {
@@ -439,7 +435,7 @@ export class HomePage implements OnInit {
           marker.push(new AdvancedMarkerElement({
             map: map,
             position: venuesLatLng ? venuesLatLng[i] : results,
-            title: venuesLatLng[i].id,
+            title: venuesLatLng[i].id + "&venueNameMap&&=" + venuesLatLng[i].name,
             content: (venuesLatLng.length - 1) == i ? myPerson : myVenueList[i].element
           }));
         }
@@ -450,10 +446,12 @@ export class HomePage implements OnInit {
           markerPos.lat = marker[i].position?.lat
           markerPos.lng = marker[i].position?.lng
           markerPos.id = marker[i].title
+          markerPos.name = marker[i].title.split("&&=")
           // marker[i].addEventListener("click", _this.router.navigate(['/venue'], { queryParams: { venueId: markerPos.id } }))
           marker[i].addListener("click", function(event: any) {
             console.log(markerPos)
-            _this.router.navigate(['/venue'], { queryParams: { venueId: markerPos.id } });
+            console.log(markerPos.name)
+            _this.router.navigate(['/venue'], { queryParams: { venueId: markerPos.id, venueName: markerPos.name[markerPos.name.length - 1] } });
             // this.mapAlert = true;
           })
         }
@@ -602,6 +600,82 @@ export class HomePage implements OnInit {
       }
     }
 
+    filterEvents(event: any) {
+      let searchKey = event.target.value
+      console.log(searchKey.length)
+      if (searchKey.length > 0) {
+        let filteredEvents: Array<any>;
+        filteredEvents = this.savedEvents.map((event: any) => {
+          console.log(event)
+          if (!event.eventName.toLowerCase().includes(searchKey)) {
+            return event.eventId
+          }
+        })
+        console.log(filteredEvents)
+        this.filterTheseEvents = filteredEvents
+      }
+      console.log(this.filterTheseEvents)
+    }
+
+    handleSavedEventsRefresh(event: any) {
+      setTimeout(() => {
+        // Any calls to load data go here
+        if (this.openMap.isOpenMap) {
+          this.openMapTab();
+        }
+        this.searchResults = null
+        this.searchResultsV2 = null
+  
+        this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+          console.log(results);
+          this.MySavedEvents.getSavedEvents({ "userId": results.userId }).subscribe((results: any) => {
+            this.savedEvents = results;
+            console.log(this.savedEvents)
+          });
+        });
+  
+        if (this.navHome.navHome) {
+          this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+            console.log(results);
+            this.MySavedEvents.getMySavedEvents({"userId": results.userId}).subscribe((results) => {
+              this.savedEvents = results;
+            });
+          });
+          this.navHome.navHome = false;
+        }
+        this.UiUxService.getMe({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+          console.log(results);
+          this.myName = results.firstName;
+        })
+        event.target.complete();
+      }, 2000);
+    }
+
+    handleHomeRefresh(event: any) {
+      setTimeout(() => {
+        // Any calls to load data go here
+        this.TicketMasterApiService.getCurrentLocation().then(results => {
+          console.log(results);
+          this.TicketMasterApiService.geoHashing(results).subscribe((results: any) => {
+            console.log(results.geoHash)
+            if (results.geoHash) {
+              this.FindEvents.getVenues(results).subscribe((results: any) => {
+                console.log(results.nearbyVenues)
+                let eventsList = [];
+                for (let i=0; i<results.nearbyVenues.length; i++) {
+                  if (results.nearbyVenues[i].images[0].url) {
+                    eventsList.push(results.nearbyVenues[i])
+                  }
+                  this.events = eventsList
+                }
+              })
+            }
+          })
+        })
+        event.target.complete();
+      }, 2000);
+    }
+
     searchKeyUpV2(event: any) {
       let searchKey = event.target.value;
       console.log(this.searchbar)
@@ -633,11 +707,9 @@ export class HomePage implements OnInit {
     clearSearchedItems() {
       this.searchResults = null;
       this.searchResultsV2 = null
-      console.log(this.fabBtnV2)
-      console.log(this.searchbarAlter.el.children[0].children[2])
       this.searchbarAlter.el.children[0].children[2].click()
       this.searchbarAlterV2.el.children[0].children[2].click()
-      console.log(this.searchbarItem)
+      this.fabBtnV2.el.fab.activated = false;
     }
 
     clearSearchedItemsCloseFab() {
@@ -648,8 +720,13 @@ export class HomePage implements OnInit {
       this.searchbarAlterV2.el.children[0].children[2].click()
     }
 
-    clickedOnhome(ev: any) {
-      console.log(ev)
+    focuseSearchbar() {
+      console.log("its working")
+      console.log(this.searchbarAlterV2Focus)
+      let input = this.searchbarAlterV2Focus
+      setTimeout(() => {
+        input.setFocus();
+      });
     }
 
     clickedSearchEvent(event: any) {
