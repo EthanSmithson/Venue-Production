@@ -30,4 +30,12 @@ export class UiUxService {
         ); 
     }
 
+    getEmail(formData: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'};
+        // const formDataJson = JSON.stringify(formData);
+        return this.http.get<any>(
+            this.baseUrl + `/api/users/getEmail/${formData.myCookie}`, {headers: headers}
+        ); 
+    }
+
 }

@@ -27,9 +27,9 @@ export class SettingsPage implements OnInit {
   firstName: String;
   lastName: String;
   phoneNumber: any;
-  password: string
+  password: string;
   email: String;
-  settingOption: number
+  settingOption: number;
 
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private route: ActivatedRoute) { }
 
