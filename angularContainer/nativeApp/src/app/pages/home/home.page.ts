@@ -27,6 +27,7 @@ import { CountdownPage } from '../countdown/countdown.page';
 import { CountdownDateService } from 'src/app/services/countdown-date.service';
 import { ClickedOutsideDirective } from './directive/clicked-outside.directive';
 import { FocusSearchbarDirective } from './directive/focus-searchbar.directive';
+import { OpenProfileService } from 'src/app/services/open-profile.service';
 
 @Component({
   selector: 'app-home',
@@ -43,9 +44,13 @@ export class HomePage implements OnInit {
   savedEvents: any;
   // openMap: boolean;
   @ViewChild('mapTab') mapTab!: ElementRef;
+  @ViewChild('profTab') profTab!: ElementRef;
   @ViewChild('homeTab') homeTab!: ElementRef;
+  @ViewChild('eventsTab') eventsTab!: ElementRef;
   mapTabBtn: any;
+  profTabBtn: any;
   homeTabBtn: any;
+  eventsTabBtn: any;
   @ViewChild('mapEl') mapEl!: ElementRef;
   @ViewChild('svgPerson') svgPerson!: ElementRef;
   @ViewChild('openModal') openModal!: ElementRef;
@@ -86,6 +91,29 @@ export class HomePage implements OnInit {
     this.searchResults = null
     this.searchResultsV2 = null
     this.filterTheseEvents = []
+
+    this.OpenProfileService.openedProf.subscribe(
+      (result) => {
+        switch (result) {
+          case 1:
+            this.profTabBtn = this.profTab
+            this.profTabBtn.el.click();
+            break
+          case 2:
+            this.homeTabBtn = this.homeTab
+            this.homeTabBtn.el.click();
+            break
+          case 3:
+            this.mapTabBtn = this.mapTab
+            this.mapTabBtn.el.click();
+            break
+          case 4:
+            this.eventsTabBtn = this.eventsTab
+            this.eventsTabBtn.el.click();
+            break
+        }
+      }
+    );
 
     this.TicketMasterApiService.getCurrentLocation().then(results => {
       console.log(results);
@@ -184,6 +212,7 @@ export class HomePage implements OnInit {
   private EventsDetails = inject(EventDetailsService);
   private navHome = inject(NavHome);
   private CountdownDate = inject(CountdownDateService);
+  private OpenProfileService = inject(OpenProfileService);
   userId: any;
   labelInUseError: any;
   labelCreatedAlert: any;
@@ -264,6 +293,11 @@ export class HomePage implements OnInit {
     this.mapTabBtn = this.mapTab;
     this.mapTabBtn.el.click();
     this.openMap.isOpenMap = false;
+  }
+  
+  openProfTab() {
+    this.profTabBtn = this.profTab;
+    this.profTabBtn.el.click();
   }
 
   openMainMap() {

@@ -13,6 +13,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { UiUxService } from './services/UiUx.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { ViewChild } from '@angular/core';
+import { ElementRef } from '@angular/core';
+import { OpenProfileService } from './services/open-profile.service';
 
 @Component({
   selector: 'app-root',
@@ -26,17 +29,22 @@ export class AppComponent {
   ];
 
   myEmail: String;
+  menuDisabled: boolean;
   UiUxService = inject(UiUxService);
-  cookieService = inject(CookieService)
+  cookieService = inject(CookieService);
+  OpenProfileService = inject(OpenProfileService);
+  @ViewChild('mainMenu') mainMenu!: ElementRef;
 
-  constructor(private router: Router) {} 
+  constructor(private router: Router, private el: ElementRef) {} 
 
   ngOnInit() {
     this.myEmail = this.cookieService.get("myCookie");
   }
 
-  navigateProfile() { 
-    this.router.navigate(['/settings']);
+  navigateTab(tabNum : number) { 
+    this.OpenProfileService.openingProf(tabNum);
+    console.log(this.mainMenu)
+    this.menuDisabled = true
   }
 
 

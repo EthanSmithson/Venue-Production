@@ -1,10 +1,10 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu #mainMenu id="mainMenu" contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
           <ion-list-header>Venue</ion-list-header>
-            <ion-item (click)="navigateProfile()" style="
+            <ion-item (click)="navigateTab(1)" style="
             display: flex;
             align-items: center;
             justify-content: space-between;" class="ion-activatable ripple-parent circle">
@@ -14,10 +14,10 @@
               <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
               </ion-avatar>
             </ion-item>
-          <ion-item>Home</ion-item>
-          <ion-item>Map</ion-item>
-          <ion-item>Events</ion-item>
-          <ion-item>Profile</ion-item>
+          <ion-item (click)="navigateTab(2)">Home</ion-item>
+          <ion-item (click)="navigateTab(3)">Map</ion-item>
+          <ion-item (click)="navigateTab(4)">Events</ion-item>
+          <ion-item (click)="navigateTab(1)">Profile</ion-item>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index"></ion-menu-toggle>
         </ion-list>
       </ion-content>
