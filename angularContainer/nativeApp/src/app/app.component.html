@@ -14,13 +14,16 @@
               <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
               </ion-avatar>
             </ion-item>
-          <ion-item (click)="navigateTab(2)">Home</ion-item>
-          <ion-item (click)="navigateTab(3)">Map</ion-item>
-          <ion-item (click)="navigateTab(4)">Events</ion-item>
-          <ion-item (click)="navigateTab(1)">Profile</ion-item>
+          <ion-item class="sideMenuNav" (click)="navigateTab(2)"> <ion-icon style="margin-right: 5vw; color: #2dd55b;" name="home-outline"></ion-icon>Home</ion-item>
+          <ion-item class="sideMenuNav" (click)="navigateTab(3)"> <ion-icon style="margin-right: 5vw; color: #2dd55b;" name="map-outline"></ion-icon>Map</ion-item>
+          <ion-item class="sideMenuNav" (click)="navigateTab(4)"> <ion-icon style="margin-right: 5vw; color: #2dd55b;" name="musical-notes-outline"></ion-icon>Events</ion-item>
+          <ion-item class="sideMenuNav" (click)="navigateTab(1)"> <ion-icon style="margin-right: 5vw; color: #2dd55b;" name="person-outline"></ion-icon>Profile</ion-item>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index"></ion-menu-toggle>
         </ion-list>
       </ion-content>
+      <ion-footer>
+        <ion-button (click)="logout()" color="success" expand="block" class="ion-padding">Logout</ion-button>
+      </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>

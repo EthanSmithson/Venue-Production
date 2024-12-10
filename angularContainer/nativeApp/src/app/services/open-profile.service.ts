@@ -7,18 +7,22 @@ import { exit } from 'ionicons/icons';
 export class OpenProfileService {
 
   openedProf =  new EventEmitter<any>();
+  isNowLoggedIn = new EventEmitter<any>();
 
   constructor() { }
 
   whichTab: number;
+  isLoggedIn: boolean;
 
   openingProf(tabNum: number) {
     this.whichTab = tabNum;
-    // this.isOpenProf ? this.isOpenProf = false : this.isOpenProf = true;
 
-    
     this.openedProf.emit(this.whichTab);
-    // this.isOpenProf = false;
+  }
+
+  isNowLoggedInFunc(value: boolean) {
+    this.isLoggedIn = value; 
+    this.isNowLoggedIn.emit(this.isLoggedIn);
   }
 
 }

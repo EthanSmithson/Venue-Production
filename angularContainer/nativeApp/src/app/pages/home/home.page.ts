@@ -60,6 +60,7 @@ export class HomePage implements OnInit {
   @ViewChild('searchbarV2') searchbarAlterV2Focus!: IonSearchbar;
   @ViewChild('searchbarItem') searchbarItem!: any;
   @ViewChild('fabBtnV2') fabBtnV2!: any;
+  @ViewChild('hamburgerBtn') hamburgerBtn: any;
   eventModal: any;
   isModalOpen = false;
   eventDetails: any
@@ -94,6 +95,8 @@ export class HomePage implements OnInit {
 
     this.OpenProfileService.openedProf.subscribe(
       (result) => {
+        // console.log(this.hamburgerBtn)
+        // this.hamburgerBtn.el.click();
         switch (result) {
           case 1:
             this.profTabBtn = this.profTab
@@ -138,6 +141,8 @@ export class HomePage implements OnInit {
       console.log(results);
       this.myName = results.firstName;
     })
+
+    this.OpenProfileService.isNowLoggedInFunc(true);
 
     this.presentingElement = document.querySelector('.ion-page');
 
