@@ -267,10 +267,11 @@
           </ion-header>
           <ion-content>
             <div class="flex-center-home">
-              <ion-avatar class="ion-activatable ripple-parent circle">
+              <ion-avatar (click)="uploadMyProfileImg()" class="ion-activatable ripple-parent circle">
                 <ion-ripple-effect></ion-ripple-effect>
-                <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                <img alt="Profile Image" src="http://localhost:8080/uploads/{{myProfileImage}}" />
               </ion-avatar>
+              <input (change)="selectedProfPic($event)" type="file" accept="image/*" hidden id="profileUpload" #profileUpload />
               <ion-list style="width: 85%; margin-top: 5vh;" [inset]="true">
                 <ion-item id="open-modal" (click)="openProfModal()" [button]="true">
                   <ion-icon color="danger" slot="start" name="list-circle" size="large"></ion-icon>
@@ -294,7 +295,7 @@
                 </ion-modal> -->
                 <ion-item [button]="true">
                   <ion-icon color="tertiary" slot="start" name="list-circle" size="large"></ion-icon>
-                  <ion-label (click)="goToSettings(2)">Display</ion-label>
+                  <ion-label (click)="goToSettings(2)">Notifications</ion-label>
                   <!-- <ion-note slot="end">15</ion-note> -->
                 </ion-item>
               </ion-list>

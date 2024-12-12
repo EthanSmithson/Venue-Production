@@ -23,6 +23,19 @@ app.set("view engine", "ejs");
 var ejs = require("ejs");
 app.use(express.static('public'));
 
+// Uploading images to user posts
+const multer = require('multer');
+const uploadedImages = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads')
+  },
+  filename: (req, file, cb) => {
+    console.log(file)
+    cb(null, file.originalname)
+  }
+});
+const upload = multer({storage: uploadedImages});
+
 // handling CORS
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", 
@@ -142,4 +155,15 @@ require("./app/routes/users.routes.js")(app);
 const PORT = process.env.NODE_DOCKER_PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+});
+
+app.post('/uploadProfileImage', upload.single('file'), (req, res) => {
+  console.log(req.file);
+  const file = req.file
+  if (!file) {
+    const error = new Error("Please Upload a File!");
+    error.httpStatusCode = 400
+    return next(error);
+  }
+  res.send(file);
 });

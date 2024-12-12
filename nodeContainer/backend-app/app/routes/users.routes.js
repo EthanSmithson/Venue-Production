@@ -59,6 +59,8 @@ module.exports = app => {
     router.get("/getProfileData/:searchKey", users.getProfileData);
 
     router.post("/updateProfile", users.updateProfile);
+
+    router.post("/uploadProfileImageToDb", users.uploadProfileImageToDb);
   
     app.use('/api/users', router);
   };

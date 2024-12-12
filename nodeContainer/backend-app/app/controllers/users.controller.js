@@ -536,3 +536,23 @@ exports.updateProfile = (req, res) => {
     else res.json({status: 1});
   });
 }
+
+exports.uploadProfileImageToDb = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  console.log(req.body)
+
+  Users.uploadProfileImageToDb((req.body), (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred."
+      });
+    else res.json({status: 1});
+  });
+}

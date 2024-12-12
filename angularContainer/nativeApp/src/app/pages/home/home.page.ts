@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonTab, IonTabBar, IonTabButton, IonIcon, IonButton, IonList, IonButtons, IonItem, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonFab, IonFabButton, IonFabList, IonPopover, IonInput, IonLabel, IonCol, IonNote, IonText, IonAvatar, IonRippleEffect, IonAccordion, IonAccordionGroup, IonModal, IonCheckbox, IonImg, IonGrid, IonRow, IonAlert, IonSearchbar, IonRefresher, IonRefresherContent, IonMenuButton} from '@ionic/angular/standalone';
-import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline } from 'ionicons/icons';
+import { homeOutline, cubeOutline, cogOutline, personOutline, mapOutline, addOutline, add, musicalNotesOutline, searchOutline, trashOutline, fileTray } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PackageCreationForm } from './form/eventSearch.page.form';
@@ -28,6 +28,8 @@ import { CountdownDateService } from 'src/app/services/countdown-date.service';
 import { ClickedOutsideDirective } from './directive/clicked-outside.directive';
 import { FocusSearchbarDirective } from './directive/focus-searchbar.directive';
 import { OpenProfileService } from 'src/app/services/open-profile.service';
+import { ProfileService } from 'src/app/services/profile.service';
+import { ProfileImageService } from 'src/app/services/profile-image.service';
 
 @Component({
   selector: 'app-home',
@@ -61,6 +63,7 @@ export class HomePage implements OnInit {
   @ViewChild('searchbarItem') searchbarItem!: any;
   @ViewChild('fabBtnV2') fabBtnV2!: any;
   @ViewChild('hamburgerBtn') hamburgerBtn: any;
+  @ViewChild('profileUpload') profileUpload: any;
   eventModal: any;
   isModalOpen = false;
   eventDetails: any
@@ -79,6 +82,7 @@ export class HomePage implements OnInit {
   mapAlert: boolean;
   _this: this = this;
   filterTheseEvents: Array<any>;
+  myProfileImage: any;
   
   
   constructor(private formBuilder: FormBuilder, private cookieService: CookieService, private renderer: Renderer2, private actionSheetCtrl: ActionSheetController, public router:Router, public route: ActivatedRoute, public openMap: OpenMap, public el: ElementRef) { }
@@ -136,6 +140,8 @@ export class HomePage implements OnInit {
         }
       })
     })
+
+    this.myProfileImage = this.ProfileImageService.profileImageString 
 
     this.UiUxService.getMe({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
       console.log(results);
@@ -218,6 +224,8 @@ export class HomePage implements OnInit {
   private navHome = inject(NavHome);
   private CountdownDate = inject(CountdownDateService);
   private OpenProfileService = inject(OpenProfileService);
+  private ProfileService = inject(ProfileService);
+  private ProfileImageService = inject(ProfileImageService);
   userId: any;
   labelInUseError: any;
   labelCreatedAlert: any;
@@ -770,6 +778,26 @@ export class HomePage implements OnInit {
 
     clickedSearchEvent(event: any) {
       this.router.navigate(['/event'], { queryParams: { eventId: event.id } });
+    }
+
+    uploadMyProfileImg() {
+      this.profileUpload.nativeElement.click()
+    }
+
+    selectedProfPic(event: any) {
+      console.log(event.target.files[0]);
+      let file = event.target.files[0];
+      this.ProfileService.uploadProfileImage({"file": file}).subscribe((result) => {
+        console.log(result);
+        this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+          let userId = results.userId;
+          this.ProfileService.uploadProfileImageToDb({"fileName": this.myProfileImage, "userId": userId}).subscribe((result) => {
+            console.log(result)
+            this.ProfileImageService.profileImageString = file.name;
+            this.myProfileImage = file.name;
+          });
+        });
+      })
     }
 
   }

@@ -283,4 +283,17 @@ Users.updateProfile = (data, result) => {
   });
 };
 
+Users.uploadProfileImageToDb = (data, result) => {
+  sql.query(`UPDATE Users SET profilePicture = '${data.fileName}' WHERE userId = ${data.userId}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    } else {
+      result(null, res);
+      return;
+    }
+  });
+};
+
 module.exports = Users;

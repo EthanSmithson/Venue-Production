@@ -18,6 +18,8 @@ import { ElementRef } from '@angular/core';
 import { OpenProfileService } from './services/open-profile.service';
 import { ResourceLoader } from '@angular/compiler';
 import { homeOutline, mapOutline, musicalNotesOutline, personOutline } from 'ionicons/icons';
+import { ProfileService } from './services/profile.service';
+import { ProfileImageService } from './services/profile-image.service';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +37,10 @@ export class AppComponent {
   UiUxService = inject(UiUxService);
   cookieService = inject(CookieService);
   OpenProfileService = inject(OpenProfileService);
+  ProfileService = inject(ProfileService);
+  ProfileImageService = inject(ProfileImageService);
+  myProfileImage: string;
+  
   @ViewChild('mainMenu') mainMenu!: any;
 
   constructor(private router: Router, private el: ElementRef) {} 
@@ -47,6 +53,16 @@ export class AppComponent {
         console.log(result);
         this.myEmail = this.cookieService.get("myCookie");
       });
+
+      this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+        console.log(results);
+        this.ProfileService.getProfileData({"userId": results.userId}).subscribe((result) => {
+          console.log(result[0].profilePicture);
+          this.ProfileImageService.profileImageString = result[0].profilePicture;
+          this.myProfileImage = result[0].profilePicture;
+        })
+      });
+
   }
 
   navigateTab(tabNum : number) { 

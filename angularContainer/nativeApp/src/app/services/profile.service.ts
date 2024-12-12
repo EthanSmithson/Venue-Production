@@ -32,4 +32,21 @@ export class ProfileService {
         );
     }
 
+    uploadProfileImage(formData: any): Observable<any> {
+        const uploadFile = new FormData();
+        uploadFile.append("file", formData.file);
+        return this.http.post<any>(
+            'http://localhost:8080/uploadProfileImage', uploadFile
+        );
+    }
+
+    uploadProfileImageToDb(formData: any): Observable<any> {
+        const headers = { 'content-type': 'application/json'}  
+        const formDataJson = JSON.stringify(formData);
+        console.log(formDataJson)
+        return this.http.post<any>(
+            this.baseUrl + '/uploadProfileImageToDb', formDataJson, {headers: headers}
+        );
+    }
+
 }
