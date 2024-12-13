@@ -158,7 +158,19 @@ export class HomePage implements OnInit {
       // this.latLng = 
     }
 
-   
+    this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+      console.log(results);
+      this.ProfileService.getProfileData({"userId": results.userId}).subscribe((result) => {
+        console.log(result[0].profilePicture);
+        this.ProfileImageService.profileImageString = result[0].profilePicture;
+        this.myProfileImage = result[0].profilePicture;
+        console.log(this.ProfileImageService.profileImageString + " " + this.myProfileImage)
+      })
+    });
+
+    this.ProfileImageService.profileImageString.subscribe(value => {
+      this.myProfileImage = value;
+    })
 
   }
 
@@ -512,7 +524,6 @@ export class HomePage implements OnInit {
     }
 
     openSavedEvent(data: any) {
-      console.log(data)
       this.isModalOpen = true;
       this.EventsDetails.getEventDetails({"eventId": data.eventId}).subscribe((results: any) => {
         console.log(results);
@@ -787,13 +798,14 @@ export class HomePage implements OnInit {
     selectedProfPic(event: any) {
       console.log(event.target.files[0]);
       let file = event.target.files[0];
+      this.myProfileImage = file.name;
       this.ProfileService.uploadProfileImage({"file": file}).subscribe((result) => {
         console.log(result);
         this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
           let userId = results.userId;
           this.ProfileService.uploadProfileImageToDb({"fileName": this.myProfileImage, "userId": userId}).subscribe((result) => {
             console.log(result)
-            this.ProfileImageService.profileImageString = file.name;
+            this.ProfileImageService.setFileName(file.name);
             this.myProfileImage = file.name;
           });
         });

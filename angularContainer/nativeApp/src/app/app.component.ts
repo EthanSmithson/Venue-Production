@@ -52,17 +52,20 @@ export class AppComponent {
         console.log("Now logged in!")
         console.log(result);
         this.myEmail = this.cookieService.get("myCookie");
-      });
 
-      this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
-        console.log(results);
-        this.ProfileService.getProfileData({"userId": results.userId}).subscribe((result) => {
-          console.log(result[0].profilePicture);
-          this.ProfileImageService.profileImageString = result[0].profilePicture;
-          this.myProfileImage = result[0].profilePicture;
+        this.UiUxService.getMyId({myCookie: this.cookieService.get("myCookie")}).subscribe((results: any) => {
+          console.log(results);
+          this.ProfileService.getProfileData({"userId": results.userId}).subscribe((result) => {
+            console.log(result[0].profilePicture);
+            // this.ProfileImageService.profileImageString = result[0].profilePicture;
+            this.myProfileImage = result[0].profilePicture;
+          })
+        });
+
+        this.ProfileImageService.profileImageString.subscribe(value => {
+          this.myProfileImage = value;
         })
       });
-
   }
 
   navigateTab(tabNum : number) { 
