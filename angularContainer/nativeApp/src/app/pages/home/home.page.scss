@@ -8,13 +8,15 @@
 }
 
 ion-content {
-    min-height: 100vh;
+    // min-height: 50vh;
     height:100%;
     width:100%;
+    position: absolute;
 }
 
 ion-tab-bar {
     height: 6vh;
+    padding: 5px;
 }
 
 :host {

@@ -11,8 +11,7 @@
 // };
 
 module.exports = {
-  // HOST: "192.168.1.138",
-  HOST: "172.17.0.1",
+  HOST: "147.182.138.193",
   USER: "root",
   PASSWORD: "password",
   DB: "Venue",

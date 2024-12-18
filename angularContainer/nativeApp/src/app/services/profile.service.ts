@@ -10,7 +10,7 @@ import { UserInfo } from '../pages/register/registerUser';
 })
 export class ProfileService {
 
-    baseUrl: string = "http://localhost:8080/api/users";
+    baseUrl: string = "http://147.182.138.193:8080/api/users";
 
     constructor(private http: HttpClient) { }
 
@@ -36,7 +36,7 @@ export class ProfileService {
         const uploadFile = new FormData();
         uploadFile.append("file", formData.file);
         return this.http.post<any>(
-            'http://localhost:8080/uploadProfileImage', uploadFile
+            'http://147.182.138.193:8080/uploadProfileImage', uploadFile
         );
     }
 

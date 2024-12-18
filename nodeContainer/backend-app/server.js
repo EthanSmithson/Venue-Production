@@ -39,7 +39,7 @@ const upload = multer({storage: uploadedImages});
 // handling CORS
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", 
-               "http://localhost:8100");
+               "http://147.182.138.193:8101");
     res.header("Access-Control-Allow-Headers", 
                "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -57,7 +57,7 @@ app.post('/confirmEmail', urlEncodedParser, async (req, res) => {
   const email = req.body.email;
 
   if (email) {
-      const data = await ejs.renderFile("/workspaces/Venue/nodeContainer/backend-app/views/confirmEmailTemplate.ejs", { email });
+      const data = await ejs.renderFile("public/views/confirmEmailTemplate.ejs", { email });
       
       const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
@@ -98,7 +98,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
     const email = req.body.email;
 
     if (req.body.email) {
-        const data = await ejs.renderFile("/workspaces/Venue/nodeContainer/backend-app/views/resetEmail.ejs", { email });
+        const data = await ejs.renderFile("public/views/resetEmail.ejs", { email });
 
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -133,7 +133,7 @@ app.post('/resetEmail', urlEncodedParser, async (req, res) => {
 });
 
 app.get('/confirmed', (req, res) => {
-  res.sendFile( __dirname + '/workspaces/Venue/nodeContainer/backend-app/emailTemplates/confirmedEmailMessage.html');
+  res.sendFile( __dirname + 'public/emailTemplates/confirmedEmailMessage.html');
 });
 
 app.get('/resetMyPassword', (req, res) => {

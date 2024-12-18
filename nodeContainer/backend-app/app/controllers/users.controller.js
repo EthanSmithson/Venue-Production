@@ -91,7 +91,7 @@ exports.emailConfirmed = (req, res) => {
     if (err) {
       if (err.kind === "not_found") {
         var path = require('path');
-        res.sendFile(path.resolve('../../nodeContainer/backend-app/emailTemplates/confirmedEmailMessage.html'));
+        res.sendFile(path.resolve('../../nodeContainer/backend-app/public/emailTemplates/confirmedEmailMessage.html'));
       } else {
         res.status(500).send({
           message: "Error retrieving User with email " + req.params.email

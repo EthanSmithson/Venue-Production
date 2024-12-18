@@ -10,8 +10,8 @@ import { UserInfo } from '../pages/register/registerUser';
 })
 export class RegisterService {
 
-    baseUrl: string = "http://localhost:8080";
-    mySqlURL: string = "http://localhost:8080/api/users";
+    baseUrl: string = "http://147.182.138.193:8080";
+    mySqlURL: string = "http://147.182.138.193:8080/api/users";
 
     constructor(private http: HttpClient) { }
 
