@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class FindEvents {
 
-    baseUrl: string = "http://147.182.138.193:8080";
+    baseUrl: string = "http://143.198.115.235:8020";
 
     constructor(private http: HttpClient) { }
 
